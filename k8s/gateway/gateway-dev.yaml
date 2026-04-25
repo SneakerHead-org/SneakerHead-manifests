@@ -5,7 +5,7 @@ metadata:
   name: sneakerhead-gateway
   namespace: sneakerhead-dev
   labels:
-    app.kubernetes.io/part-of: sneakerhead
+    app: sneakerhead-gateway
     environment: dev
 spec:
   gatewayClassName: kgateway
