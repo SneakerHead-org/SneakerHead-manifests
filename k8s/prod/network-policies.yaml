@@ -15,11 +15,11 @@ spec:
     - Ingress
     - Egress
 ---
-# Gateway pods can reach tier:frontend and tier:backend, NOT tier:data
+# Gateway: ingress from anywhere on port 80, egress to frontend, backend, K8s API, and DNS
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-gateway-egress
+  name: gateway-netpol
   namespace: sneakerhead-prod
   labels:
     app.kubernetes.io/part-of: sneakerhead
@@ -29,8 +29,15 @@ spec:
     matchLabels:
       app: sneakerhead-gateway
   policyTypes:
+    - Ingress
     - Egress
+  ingress:
+    # Accept traffic from anywhere (external LB / NodePort)
+    - ports:
+        - protocol: TCP
+          port: 8080
   egress:
+    # To frontend
     - to:
         - podSelector:
             matchLabels:
@@ -38,6 +45,7 @@ spec:
       ports:
         - protocol: TCP
           port: 80
+    # To backend services
     - to:
         - podSelector:
             matchLabels:
@@ -49,6 +57,15 @@ spec:
           port: 8002
         - protocol: TCP
           port: 8003
+    # To Kubernetes API server (gateway controller needs this)
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 6443
     # Allow DNS resolution
     - to: []
       ports:
