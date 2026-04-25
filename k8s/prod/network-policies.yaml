@@ -115,7 +115,7 @@ spec:
         - protocol: TCP
           port: 53
 ---
-# Backend: ingress from gateway only, egress to tier:data, tier:backend, and kube-dns
+# Backend: ingress from gateway + other backend services, egress to tier:data, tier:backend, and kube-dns
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -132,10 +132,23 @@ spec:
     - Ingress
     - Egress
   ingress:
+    # From gateway (external traffic)
     - from:
         - podSelector:
             matchLabels:
               app.kubernetes.io/name: sneakerhead-gateway
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+    # From other backend services (inter-service calls, e.g. order→product)
+    - from:
+        - podSelector:
+            matchLabels:
+              tier: backend
       ports:
         - protocol: TCP
           port: 8001
