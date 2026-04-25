@@ -1,0 +1,92 @@
+# HTTPRoutes for prod namespace
+# Route order: /api/users → /api/products → /api/orders → / (catch-all to frontend)
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: user-service-route
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  parentRefs:
+    - name: sneakerhead-gateway
+      namespace: sneakerhead-prod
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1/auth
+        - path:
+            type: PathPrefix
+            value: /api/v1/users
+      backendRefs:
+        - name: user-service
+          port: 8001
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: product-service-route
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  parentRefs:
+    - name: sneakerhead-gateway
+      namespace: sneakerhead-prod
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1/products
+      backendRefs:
+        - name: product-service
+          port: 8002
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: order-service-route
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  parentRefs:
+    - name: sneakerhead-gateway
+      namespace: sneakerhead-prod
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1/cart
+        - path:
+            type: PathPrefix
+            value: /api/v1/orders
+      backendRefs:
+        - name: order-service
+          port: 8003
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: frontend-route
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  parentRefs:
+    - name: sneakerhead-gateway
+      namespace: sneakerhead-prod
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: frontend-service
+          port: 80

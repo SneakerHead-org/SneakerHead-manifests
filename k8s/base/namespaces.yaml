@@ -1,0 +1,17 @@
+# SneakerHead - Namespaces
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod

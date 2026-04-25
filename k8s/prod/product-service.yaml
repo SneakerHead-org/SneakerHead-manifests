@@ -1,0 +1,118 @@
+# Product Service ConfigMap - prod (non-sensitive env vars)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-service-config
+  namespace: sneakerhead-prod
+  labels:
+    app: product-service
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+data:
+  JWT_ALGORITHM: "HS256"
+  LOG_LEVEL: "INFO"
+---
+# Product Service Secret - prod (sensitive env vars)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: product-service-secret
+  namespace: sneakerhead-prod
+  labels:
+    app: product-service
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+type: Opaque
+data:
+  # echo -n "postgresql+asyncpg://sneaker:sneakerpass123@product-postgres:5432/productdb" | base64
+  DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0Bwcm9kdWN0LXBvc3RncmVzOjU0MzIvcHJvZHVjdGRi
+  # echo -n "your-super-secret-jwt-key-change-in-production" | base64
+  JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+---
+# Product Service Deployment - prod
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: sneakerhead-prod
+  labels:
+    app: product-service
+    tier: backend
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+      tier: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: product-service
+        tier: backend
+        app.kubernetes.io/part-of: sneakerhead
+        environment: prod
+    spec:
+      containers:
+        - name: product-service
+          image: yaswanthreddy1602/sneakerhead-product-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8002
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: product-service-config
+            - secretRef:
+                name: product-service-secret
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            initialDelaySeconds: 40
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8002
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 3
+---
+# Product Service - prod (NodePort)
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+  namespace: sneakerhead-prod
+  labels:
+    app: product-service
+    tier: backend
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  type: NodePort
+  selector:
+    app: product-service
+    tier: backend
+  ports:
+    - port: 8002
+      targetPort: 8002
+      protocol: TCP
+      name: http

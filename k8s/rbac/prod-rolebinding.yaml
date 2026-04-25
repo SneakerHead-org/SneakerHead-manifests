@@ -1,0 +1,17 @@
+# RBAC - Prod RoleBinding: binds sneakerhead-prod-team group
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sneakerhead-prod-rolebinding
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+subjects:
+  - kind: Group
+    name: sneakerhead-prod-team
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: sneakerhead-prod-role
+  apiGroup: rbac.authorization.k8s.io

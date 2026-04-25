@@ -1,0 +1,137 @@
+# User PostgreSQL ConfigMap - dev
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-postgres-config
+  namespace: sneakerhead-dev
+  labels:
+    app: user-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+data:
+  PGDATA: "/var/lib/postgresql/data/pgdata"
+  POSTGRES_DB: "userdb"
+---
+# User PostgreSQL Secret - dev
+apiVersion: v1
+kind: Secret
+metadata:
+  name: user-postgres-secret
+  namespace: sneakerhead-dev
+  labels:
+    app: user-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+type: Opaque
+data:
+  # echo -n "sneaker" | base64
+  POSTGRES_USER: c25lYWtlcg==
+  # echo -n "sneakerpass123" | base64
+  POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+---
+# User PostgreSQL StatefulSet - dev
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: user-postgres
+  namespace: sneakerhead-dev
+  labels:
+    app: user-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  serviceName: user-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-postgres
+      tier: data
+  template:
+    metadata:
+      labels:
+        app: user-postgres
+        tier: data
+        app.kubernetes.io/part-of: sneakerhead
+        environment: dev
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: user-postgres-config
+            - secretRef:
+                name: user-postgres-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: user-postgres-data
+              mountPath: /var/lib/postgresql/data
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - sneaker
+                - -d
+                - userdb
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - sneaker
+                - -d
+                - userdb
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+  volumeClaimTemplates:
+    - metadata:
+        name: user-postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: nfs
+        resources:
+          requests:
+            storage: 5Gi
+---
+# User PostgreSQL Headless Service - dev
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-postgres
+  namespace: sneakerhead-dev
+  labels:
+    app: user-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: user-postgres
+    tier: data
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgres

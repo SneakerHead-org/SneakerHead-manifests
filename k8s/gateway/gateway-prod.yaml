@@ -1,0 +1,18 @@
+# Gateway for prod namespace - uses existing kgateway GatewayClass
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: sneakerhead-gateway
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+spec:
+  gatewayClassName: kgateway
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: Same

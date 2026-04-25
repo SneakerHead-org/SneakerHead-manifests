@@ -1,0 +1,137 @@
+# Product PostgreSQL ConfigMap - dev
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-postgres-config
+  namespace: sneakerhead-dev
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+data:
+  PGDATA: "/var/lib/postgresql/data/pgdata"
+  POSTGRES_DB: "productdb"
+---
+# Product PostgreSQL Secret - dev
+apiVersion: v1
+kind: Secret
+metadata:
+  name: product-postgres-secret
+  namespace: sneakerhead-dev
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+type: Opaque
+data:
+  # echo -n "sneaker" | base64
+  POSTGRES_USER: c25lYWtlcg==
+  # echo -n "sneakerpass123" | base64
+  POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+---
+# Product PostgreSQL StatefulSet - dev
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: product-postgres
+  namespace: sneakerhead-dev
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  serviceName: product-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-postgres
+      tier: data
+  template:
+    metadata:
+      labels:
+        app: product-postgres
+        tier: data
+        app.kubernetes.io/part-of: sneakerhead
+        environment: dev
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: product-postgres-config
+            - secretRef:
+                name: product-postgres-secret
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: product-postgres-data
+              mountPath: /var/lib/postgresql/data
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - sneaker
+                - -d
+                - productdb
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - sneaker
+                - -d
+                - productdb
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+  volumeClaimTemplates:
+    - metadata:
+        name: product-postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: nfs
+        resources:
+          requests:
+            storage: 5Gi
+---
+# Product PostgreSQL Headless Service - dev
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-postgres
+  namespace: sneakerhead-dev
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: product-postgres
+    tier: data
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgres

@@ -1,0 +1,17 @@
+# RBAC - Dev RoleBinding: binds sneakerhead-dev-team group
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: sneakerhead-dev-rolebinding
+  namespace: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+subjects:
+  - kind: Group
+    name: sneakerhead-dev-team
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: sneakerhead-dev-role
+  apiGroup: rbac.authorization.k8s.io

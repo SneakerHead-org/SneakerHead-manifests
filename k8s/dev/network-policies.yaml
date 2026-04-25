@@ -1,0 +1,181 @@
+# Network Policies - dev
+# Default deny all ingress and egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# Gateway pods can reach tier:frontend and tier:backend, NOT tier:data
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gateway-egress
+  namespace: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: sneakerhead-gateway
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: frontend
+      ports:
+        - protocol: TCP
+          port: 80
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+    # Allow DNS resolution
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# Frontend: ingress from gateway only, egress to kube-dns only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-netpol
+  namespace: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  podSelector:
+    matchLabels:
+      tier: frontend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: sneakerhead-gateway
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    # kube-dns only
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# Backend: ingress from gateway only, egress to tier:data, tier:backend, and kube-dns
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-netpol
+  namespace: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  podSelector:
+    matchLabels:
+      tier: backend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: sneakerhead-gateway
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+  egress:
+    # To database tier
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: data
+      ports:
+        - protocol: TCP
+          port: 5432
+    # To other backend services (inter-service communication)
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+    # kube-dns
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# Data: ingress from tier:backend only, egress to kube-dns only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: data-netpol
+  namespace: sneakerhead-dev
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+spec:
+  podSelector:
+    matchLabels:
+      tier: data
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 5432
+  egress:
+    # kube-dns only
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

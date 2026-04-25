@@ -1,0 +1,33 @@
+# RBAC - Prod Role: read-all + update/patch deployments & statefulsets only
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: sneakerhead-prod-role
+  namespace: sneakerhead-prod
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+rules:
+  # Read-all on common workload resources
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets", "replicasets", "daemonsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies", "ingresses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["gateways", "httproutes"]
+    verbs: ["get", "list", "watch"]
+  # Update/patch on deployments and statefulsets only
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["update", "patch"]
