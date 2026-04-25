@@ -108,7 +108,7 @@ spec:
         name: product-postgres-data
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: nfs
+        storageClassName: nfs-client
         resources:
           requests:
             storage: 20Gi

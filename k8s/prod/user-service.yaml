@@ -109,7 +109,7 @@ metadata:
     app.kubernetes.io/part-of: sneakerhead
     environment: prod
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: user-service
     tier: backend

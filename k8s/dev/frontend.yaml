@@ -87,7 +87,7 @@ metadata:
     app.kubernetes.io/part-of: sneakerhead
     environment: dev
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: frontend-service
     tier: frontend
