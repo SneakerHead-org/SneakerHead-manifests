@@ -36,21 +36,20 @@ helm template sneakerhead-dev . -f values-dev.yaml
 # Prod
 helm template sneakerhead-prod . -f values-prod.yaml
 ```
+# Note: you should have namespaces created before running the deploy command (kubectl create namespace sneakerhead-dev, kubectl create namespace sneakerhead-prod)
 
 ### Step 4: Deploy Dev Environment
 ```bash
 helm install sneakerhead-dev . \
   -f values-dev.yaml \
-  -n sneakerhead-dev \
-  --create-namespace
+  -n sneakerhead-dev 
 ```
 
 ### Step 5: Deploy Prod Environment
 ```bash
 helm install sneakerhead-prod . \
   -f values-prod.yaml \
-  -n sneakerhead-prod \
-  --create-namespace
+  -n sneakerhead-prod 
 ```
 
 ### Step 6: Verify Deployment
