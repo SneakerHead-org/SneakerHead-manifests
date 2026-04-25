@@ -1,0 +1,214 @@
+# Default Deny All
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+# Gateway: ingress from anywhere on listener port, egress to frontend, backend, kgateway, K8s API, DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: gateway-netpol
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  podSelector:
+    matchLabels:
+      {{ .Values.gatewayPodSelector }}: {{ .Values.gatewayPodSelectorValue }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    # To frontend
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: frontend
+      ports:
+        - protocol: TCP
+          port: 80
+    # To backend services
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+    # To kgateway controller (xDS)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ .Values.kgatewayNamespace }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.xdsPort }}
+    # To Kubernetes API server
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 6443
+    # DNS
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# Frontend: ingress from gateway, egress DNS only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-netpol
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  podSelector:
+    matchLabels:
+      tier: frontend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              {{ .Values.gatewayPodSelector }}: {{ .Values.gatewayPodSelectorValue }}
+      ports:
+        - protocol: TCP
+          port: 80
+  egress:
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# Backend: ingress from gateway + other backend services, egress to data, backend, and DNS
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-netpol
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  podSelector:
+    matchLabels:
+      tier: backend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # From gateway (external traffic)
+    - from:
+        - podSelector:
+            matchLabels:
+              {{ .Values.gatewayPodSelector }}: {{ .Values.gatewayPodSelectorValue }}
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+    # From other backend services (inter-service calls, e.g. order→product)
+    - from:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+  egress:
+    # To databases
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: data
+      ports:
+        - protocol: TCP
+          port: 5432
+    # To other backend services
+    - to:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+    # DNS
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+# Data: ingress from backend only, egress DNS only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: data-netpol
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  podSelector:
+    matchLabels:
+      tier: data
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              tier: backend
+      ports:
+        - protocol: TCP
+          port: 5432
+  egress:
+    - to: []
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: product-postgres
+description: SneakerHead product PostgreSQL sub-chart
+type: application
+version: 1.0.0

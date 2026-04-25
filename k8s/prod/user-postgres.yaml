@@ -111,7 +111,7 @@ spec:
         storageClassName: nfs-client
         resources:
           requests:
-            storage: 20Gi
+            storage: 4Gi
 ---
 # User PostgreSQL Headless Service - prod
 apiVersion: v1

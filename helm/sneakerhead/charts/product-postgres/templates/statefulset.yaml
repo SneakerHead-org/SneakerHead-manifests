@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: product-postgres
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  serviceName: product-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-postgres
+      tier: data
+  template:
+    metadata:
+      labels:
+        app: product-postgres
+        tier: data
+        app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+        environment: {{ .Values.global.environment }}
+    spec:
+      containers:
+        - name: postgres
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: product-postgres-config
+            - secretRef:
+                name: product-postgres-secret
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | quote }}
+              memory: {{ .Values.resources.limits.memory }}
+          volumeMounts:
+            - name: product-postgres-data
+              mountPath: /var/lib/postgresql/data
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - {{ .Values.probes.dbUser }}
+                - -d
+                - {{ .Values.probes.dbName }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - {{ .Values.probes.dbUser }}
+                - -d
+                - {{ .Values.probes.dbName }}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+  volumeClaimTemplates:
+    - metadata:
+        name: product-postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: {{ .Values.global.storageClassName }}
+        resources:
+          requests:
+            storage: {{ .Values.storage.size }}

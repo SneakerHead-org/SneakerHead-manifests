@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.roleName }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+rules:
+  {{- range .Values.rules }}
+  - apiGroups: {{ toJson .apiGroups }}
+    resources: {{ toJson .resources }}
+    verbs: {{ toJson .verbs }}
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.roleBindingName }}
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+subjects:
+  - kind: Group
+    name: {{ .Values.groupName }}
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: {{ .Values.roleName }}
+  apiGroup: rbac.authorization.k8s.io

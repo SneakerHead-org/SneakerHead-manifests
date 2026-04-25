@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: product-postgres-config
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+data:
+  {{- range $key, $value := .Values.config }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: product-postgres-secret
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: product-postgres
+    tier: data
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+type: Opaque
+data:
+  {{- range $key, $value := .Values.secrets }}
+  {{ $key }}: {{ $value }}
+  {{- end }}

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-postgres
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: order-postgres
+    tier: data
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: order-postgres
+    tier: data
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: postgres

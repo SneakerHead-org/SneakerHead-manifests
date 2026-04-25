@@ -1,0 +1,5 @@
+apiVersion: v2
+name: rbac
+description: SneakerHead RBAC sub-chart
+type: application
+version: 1.0.0

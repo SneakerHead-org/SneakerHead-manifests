@@ -1,0 +1,327 @@
+# ═══════════════════════════════════════════════════════════════
+# SneakerHead Helm Values — PROD Environment
+# ═══════════════════════════════════════════════════════════════
+
+global:
+  namespace: sneakerhead-prod
+  environment: prod
+  storageClassName: nfs-client
+  labels:
+    partOf: sneakerhead
+
+# ─── Frontend ─────────────────────────────────────────────────
+frontend:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: yaswanthreddy1602/sneakerhead-frontend
+    tag: latest
+    pullPolicy: Always
+  containerPort: 80
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    cpuUtilization: 60
+    memoryUtilization: 70
+  config:
+    VITE_API_URL: "/api/v1"
+  probes:
+    liveness:
+      path: /
+      port: 80
+      initialDelaySeconds: 10
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 3
+    readiness:
+      path: /
+      port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 3
+
+# ─── User Service ─────────────────────────────────────────────
+user-service:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: yaswanthreddy1602/sneakerhead-user-service
+    tag: latest
+    pullPolicy: Always
+  containerPort: 8001
+  service:
+    type: ClusterIP
+    port: 8001
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  config:
+    JWT_ALGORITHM: "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+    REFRESH_TOKEN_EXPIRE_DAYS: "7"
+    LOG_LEVEL: "INFO"
+  secrets:
+    DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0B1c2VyLXBvc3RncmVzOjU0MzIvdXNlcmRi
+    JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+  probes:
+    liveness:
+      path: /health
+      port: 8001
+      initialDelaySeconds: 40
+      periodSeconds: 30
+      timeoutSeconds: 10
+      failureThreshold: 3
+    readiness:
+      path: /health
+      port: 8001
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 10
+      failureThreshold: 3
+
+# ─── Product Service ──────────────────────────────────────────
+product-service:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: yaswanthreddy1602/sneakerhead-product-service
+    tag: latest
+    pullPolicy: Always
+  containerPort: 8002
+  service:
+    type: ClusterIP
+    port: 8002
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  config:
+    JWT_ALGORITHM: "HS256"
+    LOG_LEVEL: "INFO"
+  secrets:
+    DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0Bwcm9kdWN0LXBvc3RncmVzOjU0MzIvcHJvZHVjdGRi
+    JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+  probes:
+    liveness:
+      path: /health
+      port: 8002
+      initialDelaySeconds: 40
+      periodSeconds: 30
+      timeoutSeconds: 10
+      failureThreshold: 3
+    readiness:
+      path: /health
+      port: 8002
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 10
+      failureThreshold: 3
+
+# ─── Order Service ────────────────────────────────────────────
+order-service:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: yaswanthreddy1602/sneakerhead-order-service
+    tag: latest
+    pullPolicy: Always
+  containerPort: 8003
+  service:
+    type: ClusterIP
+    port: 8003
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  config:
+    JWT_ALGORITHM: "HS256"
+    LOG_LEVEL: "INFO"
+    USER_SERVICE_URL: "http://user-service:8001"
+    PRODUCT_SERVICE_URL: "http://product-service:8002"
+  secrets:
+    DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0BvcmRlci1wb3N0Z3Jlczo1NDMyL29yZGVyZGI=
+    JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+  probes:
+    liveness:
+      path: /health
+      port: 8003
+      initialDelaySeconds: 40
+      periodSeconds: 30
+      timeoutSeconds: 10
+      failureThreshold: 3
+    readiness:
+      path: /health
+      port: 8003
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 10
+      failureThreshold: 3
+
+# ─── User PostgreSQL ──────────────────────────────────────────
+user-postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  storage:
+    size: 4Gi
+  config:
+    PGDATA: "/var/lib/postgresql/data/pgdata"
+    POSTGRES_DB: "userdb"
+  secrets:
+    POSTGRES_USER: c25lYWtlcg==
+    POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+  probes:
+    dbUser: sneaker
+    dbName: userdb
+
+# ─── Product PostgreSQL ───────────────────────────────────────
+product-postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  storage:
+    size: 4Gi
+  config:
+    PGDATA: "/var/lib/postgresql/data/pgdata"
+    POSTGRES_DB: "productdb"
+  secrets:
+    POSTGRES_USER: c25lYWtlcg==
+    POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+  probes:
+    dbUser: sneaker
+    dbName: productdb
+
+# ─── Order PostgreSQL ─────────────────────────────────────────
+order-postgres:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "16-alpine"
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  storage:
+    size: 4Gi
+  config:
+    PGDATA: "/var/lib/postgresql/data/pgdata"
+    POSTGRES_DB: "orderdb"
+  secrets:
+    POSTGRES_USER: c25lYWtlcg==
+    POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+  probes:
+    dbUser: sneaker
+    dbName: orderdb
+
+# ─── Gateway ──────────────────────────────────────────────────
+gateway:
+  enabled: true
+  gatewayClassName: kgateway
+  listenerPort: 80
+  listenerProtocol: HTTP
+  routes:
+    - name: user-service-route
+      paths:
+        - /api/v1/auth
+        - /api/v1/users
+      backendService: user-service
+      backendPort: 8001
+    - name: product-service-route
+      paths:
+        - /api/v1/products
+      backendService: product-service
+      backendPort: 8002
+    - name: order-service-route
+      paths:
+        - /api/v1/cart
+        - /api/v1/orders
+      backendService: order-service
+      backendPort: 8003
+    - name: frontend-route
+      paths:
+        - /
+      backendService: frontend-service
+      backendPort: 80
+
+# ─── Network Policies ─────────────────────────────────────────
+network-policies:
+  enabled: true
+  gatewayPodSelector: "app.kubernetes.io/name"
+  gatewayPodSelectorValue: "sneakerhead-gateway"
+  kgatewayNamespace: kgateway-system
+  xdsPort: 9977
+
+# ─── RBAC ─────────────────────────────────────────────────────
+rbac:
+  enabled: true
+  roleName: sneakerhead-prod-role
+  roleBindingName: sneakerhead-prod-rolebinding
+  groupName: sneakerhead-prod-team
+  rules:
+    # Read-only on common resources
+    - apiGroups: [""]
+      resources: ["pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "endpoints"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["apps"]
+      resources: ["deployments", "statefulsets", "replicasets", "daemonsets"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["batch"]
+      resources: ["jobs", "cronjobs"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["autoscaling"]
+      resources: ["horizontalpodautoscalers"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["networking.k8s.io"]
+      resources: ["networkpolicies", "ingresses"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["gateway.networking.k8s.io"]
+      resources: ["gateways", "httproutes"]
+      verbs: ["get", "list", "watch"]
+    # Update/patch on deployments and statefulsets only
+    - apiGroups: ["apps"]
+      resources: ["deployments", "statefulsets"]
+      verbs: ["update", "patch"]
