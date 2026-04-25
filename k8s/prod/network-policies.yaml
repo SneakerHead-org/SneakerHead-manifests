@@ -57,6 +57,14 @@ spec:
           port: 8002
         - protocol: TCP
           port: 8003
+    # To kgateway controller (xDS config) in kgateway-system namespace
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kgateway-system
+      ports:
+        - protocol: TCP
+          port: 9977
     # To Kubernetes API server (gateway controller needs this)
     - to:
         - ipBlock:
@@ -127,7 +135,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: sneakerhead-gateway
+              app.kubernetes.io/name: sneakerhead-gateway
       ports:
         - protocol: TCP
           port: 8001
