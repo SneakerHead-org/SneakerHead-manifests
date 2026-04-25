@@ -97,7 +97,7 @@ spec:
             timeoutSeconds: 10
             failureThreshold: 3
 ---
-# User Service - dev (NodePort)
+# User Service - dev (ClusterIP)
 apiVersion: v1
 kind: Service
 metadata:

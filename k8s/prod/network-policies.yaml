@@ -27,7 +27,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: sneakerhead-gateway
+      app.kubernetes.io/name: sneakerhead-gateway
   policyTypes:
     - Ingress
     - Egress
@@ -102,7 +102,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: sneakerhead-gateway
+              app.kubernetes.io/name: sneakerhead-gateway
       ports:
         - protocol: TCP
           port: 80

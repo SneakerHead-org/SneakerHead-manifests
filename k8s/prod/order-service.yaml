@@ -97,7 +97,7 @@ spec:
             timeoutSeconds: 10
             failureThreshold: 3
 ---
-# Order Service - prod (NodePort)
+# Order Service - prod (ClusterIP)
 apiVersion: v1
 kind: Service
 metadata:
