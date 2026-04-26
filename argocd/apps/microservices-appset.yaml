@@ -1,0 +1,148 @@
+# ═══════════════════════════════════════════════════════════════
+# ArgoCD ApplicationSet — Microservices (DEV + PROD)
+# Sync Wave 2: Microservices deploy after infra (wave 0) and
+#              databases (wave 1) are ready
+#
+# List generator: 5 services × 2 environments = 10 Applications
+#   - frontend, gateway, order-service, product-service, user-service
+#   - dev (autoSync), prod (manual)
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sneakerhead-microservices
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          # ─── DEV environment ──────────────────────────────
+          - service: frontend
+            env: dev
+            namespace: sneakerhead-dev
+            valuesFile: values-dev.yaml
+            autoSync: "true"
+          - service: gateway
+            env: dev
+            namespace: sneakerhead-dev
+            valuesFile: values-dev.yaml
+            autoSync: "true"
+          - service: user-service
+            env: dev
+            namespace: sneakerhead-dev
+            valuesFile: values-dev.yaml
+            autoSync: "true"
+          - service: product-service
+            env: dev
+            namespace: sneakerhead-dev
+            valuesFile: values-dev.yaml
+            autoSync: "true"
+          - service: order-service
+            env: dev
+            namespace: sneakerhead-dev
+            valuesFile: values-dev.yaml
+            autoSync: "true"
+          # ─── PROD environment ─────────────────────────────
+          - service: frontend
+            env: prod
+            namespace: sneakerhead-prod
+            valuesFile: values-prod.yaml
+            autoSync: "false"
+          - service: gateway
+            env: prod
+            namespace: sneakerhead-prod
+            valuesFile: values-prod.yaml
+            autoSync: "false"
+          - service: user-service
+            env: prod
+            namespace: sneakerhead-prod
+            valuesFile: values-prod.yaml
+            autoSync: "false"
+          - service: product-service
+            env: prod
+            namespace: sneakerhead-prod
+            valuesFile: values-prod.yaml
+            autoSync: "false"
+          - service: order-service
+            env: prod
+            namespace: sneakerhead-prod
+            valuesFile: values-prod.yaml
+            autoSync: "false"
+
+  template:
+    metadata:
+      name: "sneakerhead-{{.service}}-{{.env}}"
+      namespace: argocd
+      labels:
+        app.kubernetes.io/part-of: sneakerhead
+        environment: "{{.env}}"
+        tier: app
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: sneakerhead-apps
+
+      source:
+        repoURL: https://github.com/SneakerHead-org/SneakerHead-manifests
+        targetRevision: HEAD
+        path: helm/sneakerhead
+        helm:
+          valueFiles:
+            - "{{.valuesFile}}"
+          parameters:
+            # Disable ALL sub-charts first (blanket disable)
+            - name: frontend.enabled
+              value: "false"
+            - name: gateway.enabled
+              value: "false"
+            - name: user-service.enabled
+              value: "false"
+            - name: product-service.enabled
+              value: "false"
+            - name: order-service.enabled
+              value: "false"
+            - name: user-postgres.enabled
+              value: "false"
+            - name: product-postgres.enabled
+              value: "false"
+            - name: order-postgres.enabled
+              value: "false"
+            - name: network-policies.enabled
+              value: "false"
+            - name: rbac.enabled
+              value: "false"
+            # Re-enable ONLY the target service (MUST be last — Helm
+            # processes --set left-to-right, last value wins)
+            - name: "{{.service}}.enabled"
+              value: "true"
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{.namespace}}"
+
+      # Base sync policy (overridden by templatePatch for dev)
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - Replace=false
+
+  # ─── Strategy: control sync policy per environment ────────
+  # Dev applications get automated sync; prod stays manual.
+  # We use the templatePatch to conditionally inject the automated block.
+  templatePatch: |
+    {{- if eq .autoSync "true" }}
+    spec:
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+          - Replace=false
+    {{- end }}

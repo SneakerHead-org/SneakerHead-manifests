@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════
+# AppProject — Application Tier (Microservices + Gateway)
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: sneakerhead-apps
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+spec:
+  description: Application tier — microservices, frontend, and gateway
+
+  sourceRepos:
+    - https://github.com/SneakerHead-org/SneakerHead-manifests
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: sneakerhead-dev
+    - server: https://kubernetes.default.svc
+      namespace: sneakerhead-prod
+
+  # Allow application-related resource types
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute

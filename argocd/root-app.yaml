@@ -1,0 +1,42 @@
+# ═══════════════════════════════════════════════════════════════
+# ArgoCD Root Application — App of Apps
+#
+# This is the single entry point that ArgoCD watches.
+# It discovers all child Application/ApplicationSet manifests
+# under the argocd/ directory in the Git repository.
+#
+# Deployment order is controlled via sync-wave annotations:
+#   Wave 0: AppProjects + Infra (RBAC, Network Policies)
+#   Wave 1: Databases (PostgreSQL StatefulSets)
+#   Wave 2: Microservices (frontend, gateway, services)
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sneakerhead-root
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/SneakerHead-org/SneakerHead-manifests
+    targetRevision: HEAD
+    path: argocd
+    directory:
+      recurse: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  # Auto-sync so new Application manifests are picked up automatically
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=false

@@ -1,0 +1,61 @@
+# ═══════════════════════════════════════════════════════════════
+# ArgoCD Application — User PostgreSQL (DEV)
+# Sync Wave 1: Databases sync after infra, before microservices
+# AutoSync DISABLED to prevent accidental data loss
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sneakerhead-user-postgres-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+    tier: data
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sneakerhead-data
+
+  source:
+    repoURL: https://github.com/SneakerHead-org/SneakerHead-manifests
+    targetRevision: HEAD
+    path: helm/sneakerhead
+    helm:
+      valueFiles:
+        - values-dev.yaml
+      parameters:
+        # Enable only user-postgres
+        - name: user-postgres.enabled
+          value: "true"
+        # Disable all other sub-charts
+        - name: frontend.enabled
+          value: "false"
+        - name: user-service.enabled
+          value: "false"
+        - name: product-service.enabled
+          value: "false"
+        - name: order-service.enabled
+          value: "false"
+        - name: product-postgres.enabled
+          value: "false"
+        - name: order-postgres.enabled
+          value: "false"
+        - name: gateway.enabled
+          value: "false"
+        - name: network-policies.enabled
+          value: "false"
+        - name: rbac.enabled
+          value: "false"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sneakerhead-dev
+
+  # Databases: ALWAYS manual sync — never auto-sync StatefulSets
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=false

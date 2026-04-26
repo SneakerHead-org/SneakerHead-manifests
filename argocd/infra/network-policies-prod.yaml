@@ -1,0 +1,60 @@
+# ═══════════════════════════════════════════════════════════════
+# ArgoCD Application — Network Policies (PROD)
+# Sync Wave 0: Applied first before databases and microservices
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sneakerhead-network-policies-prod
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+    tier: infra
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sneakerhead-infra
+
+  source:
+    repoURL: https://github.com/SneakerHead-org/SneakerHead-manifests
+    targetRevision: HEAD
+    path: helm/sneakerhead
+    helm:
+      valueFiles:
+        - values-prod.yaml
+      parameters:
+        # Enable only the network-policies sub-chart
+        - name: network-policies.enabled
+          value: "true"
+        # Disable all other sub-charts
+        - name: frontend.enabled
+          value: "false"
+        - name: user-service.enabled
+          value: "false"
+        - name: product-service.enabled
+          value: "false"
+        - name: order-service.enabled
+          value: "false"
+        - name: user-postgres.enabled
+          value: "false"
+        - name: product-postgres.enabled
+          value: "false"
+        - name: order-postgres.enabled
+          value: "false"
+        - name: gateway.enabled
+          value: "false"
+        - name: rbac.enabled
+          value: "false"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sneakerhead-prod
+
+  # Prod: manual sync — no automated block
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=false

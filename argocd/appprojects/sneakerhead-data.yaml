@@ -1,0 +1,35 @@
+# ═══════════════════════════════════════════════════════════════
+# AppProject — Data Tier (PostgreSQL Databases)
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: sneakerhead-data
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+spec:
+  description: Data tier — PostgreSQL database StatefulSets
+
+  sourceRepos:
+    - https://github.com/SneakerHead-org/SneakerHead-manifests
+
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: sneakerhead-dev
+    - server: https://kubernetes.default.svc
+      namespace: sneakerhead-prod
+
+  # Only allow database-related resource types
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: StatefulSet
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: PersistentVolumeClaim

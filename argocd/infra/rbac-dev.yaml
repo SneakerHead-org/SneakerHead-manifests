@@ -1,0 +1,63 @@
+# ═══════════════════════════════════════════════════════════════
+# ArgoCD Application — RBAC (DEV)
+# Sync Wave 0: Applied first before databases and microservices
+# ═══════════════════════════════════════════════════════════════
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sneakerhead-rbac-dev
+  namespace: argocd
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+    tier: infra
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: sneakerhead-infra
+
+  source:
+    repoURL: https://github.com/SneakerHead-org/SneakerHead-manifests
+    targetRevision: HEAD
+    path: helm/sneakerhead
+    helm:
+      valueFiles:
+        - values-dev.yaml
+      parameters:
+        # Enable only the rbac sub-chart
+        - name: rbac.enabled
+          value: "true"
+        # Disable all other sub-charts
+        - name: frontend.enabled
+          value: "false"
+        - name: user-service.enabled
+          value: "false"
+        - name: product-service.enabled
+          value: "false"
+        - name: order-service.enabled
+          value: "false"
+        - name: user-postgres.enabled
+          value: "false"
+        - name: product-postgres.enabled
+          value: "false"
+        - name: order-postgres.enabled
+          value: "false"
+        - name: gateway.enabled
+          value: "false"
+        - name: network-policies.enabled
+          value: "false"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sneakerhead-dev
+
+  # Dev: automated sync with self-heal and pruning
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=false
