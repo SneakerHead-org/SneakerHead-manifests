@@ -138,7 +138,7 @@ order-service:
   replicaCount: 2
   image:
     repository: yaswanthreddy1602/sneakerhead-order-service
-    tag: latest
+    tag: dev-3fd6e00
     pullPolicy: IfNotPresent
   containerPort: 8003
   service:
