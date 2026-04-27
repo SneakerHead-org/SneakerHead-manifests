@@ -8,7 +8,6 @@ global:
   storageClassName: nfs-client
   labels:
     partOf: sneakerhead
-
 # ─── Frontend ─────────────────────────────────────────────────
 frontend:
   enabled: true
@@ -51,14 +50,13 @@ frontend:
       periodSeconds: 10
       timeoutSeconds: 5
       failureThreshold: 3
-
 # ─── User Service ─────────────────────────────────────────────
 user-service:
   enabled: true
   replicaCount: 2
   image:
     repository: yaswanthreddy1602/sneakerhead-user-service
-    tag: latest
+    tag: v0.1.5
     pullPolicy: Always
   containerPort: 8001
   service:
@@ -94,7 +92,6 @@ user-service:
       periodSeconds: 10
       timeoutSeconds: 10
       failureThreshold: 3
-
 # ─── Product Service ──────────────────────────────────────────
 product-service:
   enabled: true
@@ -135,7 +132,6 @@ product-service:
       periodSeconds: 10
       timeoutSeconds: 10
       failureThreshold: 3
-
 # ─── Order Service ────────────────────────────────────────────
 order-service:
   enabled: true
@@ -178,7 +174,6 @@ order-service:
       periodSeconds: 10
       timeoutSeconds: 10
       failureThreshold: 3
-
 # ─── User PostgreSQL ──────────────────────────────────────────
 user-postgres:
   enabled: true
@@ -204,7 +199,6 @@ user-postgres:
   probes:
     dbUser: sneaker
     dbName: userdb
-
 # ─── Product PostgreSQL ───────────────────────────────────────
 product-postgres:
   enabled: true
@@ -230,7 +224,6 @@ product-postgres:
   probes:
     dbUser: sneaker
     dbName: productdb
-
 # ─── Order PostgreSQL ─────────────────────────────────────────
 order-postgres:
   enabled: true
@@ -256,7 +249,6 @@ order-postgres:
   probes:
     dbUser: sneaker
     dbName: orderdb
-
 # ─── Gateway ──────────────────────────────────────────────────
 gateway:
   enabled: true
@@ -286,7 +278,6 @@ gateway:
         - /
       backendService: frontend-service
       backendPort: 80
-
 # ─── Network Policies ─────────────────────────────────────────
 network-policies:
   enabled: true
@@ -294,7 +285,6 @@ network-policies:
   gatewayPodSelectorValue: "sneakerhead-gateway"
   kgatewayNamespace: kgateway-system
   xdsPort: 9977
-
 # ─── RBAC ─────────────────────────────────────────────────────
 rbac:
   enabled: true
