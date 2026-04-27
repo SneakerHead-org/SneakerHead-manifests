@@ -20,16 +20,28 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: sneakerhead-prod
 
-  # Only allow database-related resource types
+  # PersistentVolumes are cluster-scoped but managed by the StorageClass,
+  # not directly by these charts. PVCs from volumeClaimTemplates are
+  # namespace-scoped and tracked by ArgoCD via the StatefulSet.
   clusterResourceWhitelist: []
+
+  # Exact resource kinds rendered by user-postgres, product-postgres,
+  # order-postgres sub-charts
   namespaceResourceWhitelist:
+    # statefulset.yaml
     - group: apps
       kind: StatefulSet
+    # Pods created by StatefulSet — ArgoCD health checks track these
+    - group: ""
+      kind: Pod
+    # service.yaml
     - group: ""
       kind: Service
+    # config.yaml (two docs: ConfigMap + Secret)
     - group: ""
       kind: ConfigMap
     - group: ""
       kind: Secret
+    # volumeClaimTemplates inside StatefulSet creates PVCs
     - group: ""
       kind: PersistentVolumeClaim

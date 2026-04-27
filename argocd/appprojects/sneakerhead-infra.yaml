@@ -11,22 +11,24 @@ metadata:
 spec:
   description: Infrastructure resources — RBAC and Network Policies
 
-  # Only allow this specific Git repository as a source
   sourceRepos:
     - https://github.com/SneakerHead-org/SneakerHead-manifests
 
-  # Restrict deployments to SneakerHead namespaces
   destinations:
     - server: https://kubernetes.default.svc
       namespace: sneakerhead-dev
     - server: https://kubernetes.default.svc
       namespace: sneakerhead-prod
 
-  # Only allow infrastructure-related resource types
+  # No cluster-scoped resources needed for infra
   clusterResourceWhitelist: []
+
+  # Exact resource kinds rendered by rbac + network-policies sub-charts
   namespaceResourceWhitelist:
+    # network-policies sub-chart
     - group: networking.k8s.io
       kind: NetworkPolicy
+    # rbac sub-chart
     - group: rbac.authorization.k8s.io
       kind: Role
     - group: rbac.authorization.k8s.io

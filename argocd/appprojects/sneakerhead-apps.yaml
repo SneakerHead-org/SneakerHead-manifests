@@ -20,20 +20,33 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: sneakerhead-prod
 
-  # Allow application-related resource types
+  # No cluster-scoped resources needed for application tier
   clusterResourceWhitelist: []
+
+  # Exact resource kinds rendered by frontend, gateway, user-service,
+  # product-service, order-service sub-charts
   namespaceResourceWhitelist:
+    # deployment.yaml (all 4 services + frontend)
     - group: apps
       kind: Deployment
+    # Pods created by Deployments — ArgoCD health checks track these
+    - group: ""
+      kind: Pod
+    # service.yaml (all 5 charts)
     - group: ""
       kind: Service
+    # configmap.yaml (frontend, user-service, product-service, order-service)
     - group: ""
       kind: ConfigMap
+    # secret.yaml (user-service, product-service, order-service)
     - group: ""
       kind: Secret
+    # hpa.yaml (frontend only — autoscaling/v2)
     - group: autoscaling
       kind: HorizontalPodAutoscaler
+    # gateway.yaml (gateway sub-chart)
     - group: gateway.networking.k8s.io
       kind: Gateway
+    # httproutes.yaml (gateway sub-chart)
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
