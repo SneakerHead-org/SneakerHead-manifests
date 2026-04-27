@@ -14,7 +14,7 @@ frontend:
   replicaCount: 2
   image:
     repository: yaswanthreddy1602/sneakerhead-frontend
-    tag: latest
+    tag: dev-50bc106
     pullPolicy: IfNotPresent
   containerPort: 80
   service:
