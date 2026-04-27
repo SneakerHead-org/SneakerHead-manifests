@@ -98,7 +98,7 @@ product-service:
   replicaCount: 2
   image:
     repository: yaswanthreddy1602/sneakerhead-product-service
-    tag: latest
+    tag: v0.0.4
     pullPolicy: Always
   containerPort: 8002
   service:
