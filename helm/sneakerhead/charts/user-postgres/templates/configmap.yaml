@@ -1,14 +1,14 @@
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
-  name: user-service-secret
+  name: user-postgres-config
   namespace: {{ .Values.global.namespace }}
   labels:
-    app: user-service
+    app: user-postgres
+    tier: data
     app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
     environment: {{ .Values.global.environment }}
-type: Opaque
 data:
-  {{- range $key, $value := .Values.secrets }}
-  {{ $key }}: {{ $value }}
+  {{- range $key, $value := .Values.config }}
+  {{ $key }}: {{ $value | quote }}
   {{- end }}

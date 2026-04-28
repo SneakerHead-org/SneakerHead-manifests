@@ -14,9 +14,9 @@ data:
   USER_SERVICE_URL: "http://user-service:8001"
   PRODUCT_SERVICE_URL: "http://product-service:8002"
 ---
-# Order Service Secret - dev (sensitive env vars)
-apiVersion: v1
-kind: Secret
+# Order Service SealedSecret - dev
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
 metadata:
   name: order-service-secret
   namespace: sneakerhead-dev
@@ -24,12 +24,15 @@ metadata:
     app: order-service
     app.kubernetes.io/part-of: sneakerhead
     environment: dev
-type: Opaque
-data:
-  # echo -n "postgresql+asyncpg://sneaker:sneakerpass123@order-postgres:5432/orderdb" | base64
-  DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0BvcmRlci1wb3N0Z3Jlczo1NDMyL29yZGVyZGI=
-  # echo -n "your-super-secret-jwt-key-change-in-production" | base64
-  JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+spec:
+  encryptedData:
+    DATABASE_URL: AgBygHR++zVQeuGKO2BdpnFGlFoSLEu71rGGdxdl8kLbpt2zIt53/Dg9DruZCRTUtnkLEQSyAysrNw5X4hj6B5rJwSdKkqvWEPA1PYjuA45bEPp9mzEsBmfF7aCrlPezUHqpPcqH6aheaBIpys+Watj72CO37aaUBPMz2HsCiZ4yX2eC1/sEwV/wz9KxkXt/XBg/Ua1H/qbe9Wxcu+NLJROzwYz/tSuW+cV6gRKrBqyRfbdMw/BJpPSukV7IJBJFnJH/ZQ3sDXORerbc/0TC+vEwfEqkvZxgDgnA3Qkb0bkxm863bL42QAOz6nkuN2Lk7xgg6UK5A0Io/QxL8Z9O45LZDnhTUxoOithCH95oGGTjTvAPFYnBsUT72hgBz+4x9U13tvXugQaFR9U87k3ZKO7R8el1Vr+WNH3jbCx2cA8nyuiikaJuf0WtP2jT5/U/etDZkLfkVQaWgb1G1pT1NXVbIIlpPKOfcwEx70FA4R8zv4fjP0ya+2K4PHc8JSSClo7Y6Y21mH0+d+Pi6xyFPOCf3PiSq6l1B2W+nby6GvwYPC09khzg+x3luQUqjbAdsVXnq1Vr1wcQQv7B/okiagoyZpe5y09a2TJkfEgJfFIwHXRYGFFdtgfb/1+mjdvJI4aS/on78uI5d+J7xL8e1XmZGaDakwsGUVbB9kaP2bVIjCl+Oxui94QLDOyBruot0Ox5zlUL/Hm731b+eCuWeN61qAn9FSJG/2ml83OXduF4Rp75nRL30K6K6K4HRGvBPZ9WJHmoHdBMT+p5ct2lmwgE0QLelQ/omA==
+    JWT_SECRET: AgC0hOBSK85831QH5aEs7ei1vyd5SEoWDfFMQn9INpcOXl7uMDVX1LvE07/aDsdTpBNH7jLkNw3j8LZyREPU615gCHynptNo5BXQrdwNGHg5LiGdZrkz6jdF1J3YxfRXQDyzRS4cPFyOo4SdWk7ZzANxF7QmBkcMtj3M6QeNLzGztvCywcAT5mlueD+raFMzNia19jS9bn4zgAUtNzfNTtDz+ldXEvtO4pB+hAySJNfQNOPQJs1snOLEDYffKRaXyPtcsxPl4AuxIHiLjzBSIRzaN5HT+hKw+DFvPJMP59RNdzSOUj9p70ZHdd0SjZEKyCDkoyDM9IMqIBh0ZOa3WfnZbmTWOacpKB8YBvmJryJJshXJZ15OtbOO6akgZ5iDNkJBW570khpAMFv0GR0rq9KFrRXyDh2szUjPWMuXxJMPiqGn51pTXCZx9DJqB9A3zceTl1Yj8PYrNs67clw3BDTfWhZB4J17fj5Q5AAAN3Yb1HVCFy0otuni0uat16OXBlOpGz9R5KU1NqL9n1piql2rpvTG/X38QoYZNYlv7S7is3Dgztn3NeqI8IRlM0iEIyF85C4VTsCsPScLS2D+YxUHhLrwmt+RHyMTax8ut7DBGNlqZYmZtPJWAVkXyOT0QCvkx7QKoghV2AUbLEbwwvNpORKwrZGTxd6MJiIQh2jOFyvsh/LIqrr2zrRti63O3DJqCqkQ/RuRHzNN3cEqKYAfiHfDQ0GYsX7VFoT8ZhGxUzpgJHuIjN9qrZSpH/v7
+  template:
+    metadata:
+      name: order-service-secret
+      namespace: sneakerhead-dev
+    type: Opaque
 ---
 # Order Service Deployment - dev
 apiVersion: apps/v1

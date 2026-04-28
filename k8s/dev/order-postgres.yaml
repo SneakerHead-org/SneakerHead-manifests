@@ -13,9 +13,9 @@ data:
   PGDATA: "/var/lib/postgresql/data/pgdata"
   POSTGRES_DB: "orderdb"
 ---
-# Order PostgreSQL Secret - dev
-apiVersion: v1
-kind: Secret
+# Order PostgreSQL SealedSecret - dev
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
 metadata:
   name: order-postgres-secret
   namespace: sneakerhead-dev
@@ -24,12 +24,15 @@ metadata:
     tier: data
     app.kubernetes.io/part-of: sneakerhead
     environment: dev
-type: Opaque
-data:
-  # echo -n "sneaker" | base64
-  POSTGRES_USER: c25lYWtlcg==
-  # echo -n "sneakerpass123" | base64
-  POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+spec:
+  encryptedData:
+    POSTGRES_USER: AgCq5bkoON7BBgq9XUE+04u7W6U6HtA7qh/qXaQ3ya2fsTF+6uyTAhau9TeKZdRn3NoTjrKvFsDNuOSEzbo8X6+JJ4XhkzNPHXbpqR5aGF+15H8zubdnVRLBWv4eU7FUTb385TeQDeCalbeFXaiEtuI9ZK3xsHtIh7JNiP3sZvJvWq7FHj19aBKq0PAY4b7XHPkH3/rzmVST0jPHjiDsNQTsrsO2VRLxKXBHNafaPvkkUxUN6v3h8aqy3eHu68v2QMpmrfNUmZY2e5bxWfGkKj7zNAPLEhIDAv9iKuqhbM84L09+JyNZMyUrl8t78kK5wiFy7vgFFTW0xUFl51MzTzmvUsWPRLm0rCLRpdkQyv0I8W+jcGeixL+hUY8gdMRc7IOJ0j5IRGxfr4kjdwKdcjZnuLpeJT/PajqXHyzcRmFuRHSueisq0Oz6dysbz1NSyqUB08R6rmzeXPAdKZTCvMqAk3uAQl/92Mhg7O3bVUDLds6WGxl/jo+sDwzICwXGQGcz8IU7Ar2pmkioBGqwEUvbW66seY5q5U/JpOIFKv8PsUUiWucWBiXA6UG9JDCcOyNKzZs+E9LlBPPJsIccLxtFNX1R1fLjgVYj1SoL9nlMtFddSywMPgbBjqXX+KJAQS06lt/1EkGjylzaCAzD2hq4JKcqaMAe+R2w26L3E+/jc89AiwFccd2A1/Osf2a8GLWQiYlsJ+zT
+    POSTGRES_PASSWORD: AgCn7BVTUGFZpZgYlIjIPEfZcSFewKKOHTAozBL3y3WyRe16V5S89xN2LuqbRygAlE703uloi4P1pedm9jCuuDh3s+GavlMuNGQ1CkuKBTlrRZ9KTdkTFMRR/A1txZPLdK0nLwK0Yu4y6ECPDY3M9QzvVrL+jy1Xoh71Lh5Dvkz3eILJQTOSG+bYJ1KF8zeUswqrWyEZBvu2JHEePyQbTlIoGsvThLUb6SiimHxlkbPnJYlNiuewKHSZsUVwuHVELvRbj+Su0HnGb2yY/TtufcV7Q+cGBOjdYQb0cL6v4YlqY3urgqGK+NubkZrABxsTPmKbLDrhhartRlKl2R/CHb0O2ZX1OY2qk7DDx/sxKt0e3oTfL9pkYMktKfmyXAIBgDaHExxmBr8roUQZ1KaIYm42Yt0MgZsroPaBV7esy9PFisnjj0uUJHN/ImEPuuu7CAE3QdgGAYcH6VXmk8jajxwJcYAFZLh23QtfOB+fb5SdBf44saOb4ytGORzEhnp4sasZLCXrAuks+JkNwdHTEY22W0ri0zdgx/FY75Xo4P4Mz72OhfQsus2u7w6BJSyOGWaUY8phuhxCEnp7QrwtEJigezB+qdc1Umc1AI32cTVi+GsdaZdcKtJPpTusxWO9ZGkYFRKxooFnrkJT2HxNdWnBt8QUwrHLGk4QMfxCQx7Aj+75AcnbB0ZrZ/87HVEXzn30p7cAeDKr0v+xYYnR/Q==
+  template:
+    metadata:
+      name: order-postgres-secret
+      namespace: sneakerhead-dev
+    type: Opaque
 ---
 # Order PostgreSQL StatefulSet - dev
 apiVersion: apps/v1

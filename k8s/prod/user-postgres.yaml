@@ -13,9 +13,9 @@ data:
   PGDATA: "/var/lib/postgresql/data/pgdata"
   POSTGRES_DB: "userdb"
 ---
-# User PostgreSQL Secret - prod
-apiVersion: v1
-kind: Secret
+# User PostgreSQL SealedSecret - prod
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
 metadata:
   name: user-postgres-secret
   namespace: sneakerhead-prod
@@ -24,12 +24,15 @@ metadata:
     tier: data
     app.kubernetes.io/part-of: sneakerhead
     environment: prod
-type: Opaque
-data:
-  # echo -n "sneaker" | base64
-  POSTGRES_USER: c25lYWtlcg==
-  # echo -n "sneakerpass123" | base64
-  POSTGRES_PASSWORD: c25lYWtlcnBhc3MxMjM=
+spec:
+  encryptedData:
+    POSTGRES_USER: AgCpH0iUHSwEooxrT6POEhxPexb+tiUxbZKjQkh0eY5qy1gpybmLP4TNIDIX3My3Dietv7RVami7ZNuBYm0lranUE5WKgEkXuGxni5GNFzyb+5aEfQTK0u1JqnowxbsgPUGhD5Pr9GHg7H9DaWMzI3VyXowlVKFw1/bUQf406VGMKLWbsRa1VEQwIz+iEtp8qfykJq2JQg6vnOEw291YYzg8urIo03yu9MA3KkR0ioI1FuxvSxEunG9yBsn/qx8YlrD4mJftl2fWyOuH82ZN1G/4CEXPsyI/2iG1h8yNDUktW9mzkJ0yPYcAupV1rWsShcHTIXm/n+wroxyY95rVIJand45VBaSDHhz+dcXW8khO/cBtcH/MP82VUPKVwT8Fa9I78TR/JwZGZtNKKnErpqEbizqOgORN8k8OBfuGNroJTvKUQMy7K+1hzrxzJzEtSabupCe2KN3tnW335BogbSPBk+VUEpsL+8kR5LtZNmrqMqEOLheaEbXe+/IOH1+UJykCA2WBmyvz/KtjhWzbU2gSS6VR3A8GoJaCMRkO+u/+kfPYnwZ8w01FMu+XgDg1l14gpT/K2TipIZv6gFMI05+jsVyP7W0nG62PsRL3/vsO8Vh1VVXY8jdrw2Bf6UDsA/fgZzTEGU8kCSgPtpv5+ea6o/aSeXiOvJv/BVLMiRze69UVSyFAjD6ou9rgcNRZU+IMo+3NsMrS
+    POSTGRES_PASSWORD: AgB4oX7J7vQn9ac3TqsQt4QYqXE64rfTlG+uADsEUYYZcBfgsXCWw31KuRosxMFN3V09WZ8hD00UYGZbFXmXEIogQjxdCrhLOT50p7MyIwoW/lKd0EcayoP/RBo2dPQQ8dZLvPWuDSZD492UtDXQ2+9JxcCnv0+flVZH/dtRjDvjc3KfivJiuFHUSK6SYadBwe021N2LIDxadFrW2ih1qmdD96dVFkys8Bw38Psihmeb/HYl1pdCCsgxzY9Kuvtb53CLI3Ol1KcQr2gK5ee4uTdSEYl/fhrc0hC24A1RGLIlvTt23rrFKEePRRXH67atOMFVk7mZ++hCD5B/TTQ9mzl+m3jvC68e1JAIbUsypCgsHHGoc+vcEfbTidGlei0e77pYXIxU/U2uHUtAzjMd/lASlmq0JjUXtjH3r7emdU8sWnR01kSx73CIBlx9s0odg04ZxRGB0ugcQ+3vcTj9kJnQxN0Rw3IIldfjgaTn1wsrBEmbiqydswto8yUVKgg3j9RZ1DfRJidEQejLahdpScMQQ6EZYzieu5yaYUn7kbRL9jeYSH+RC1lzIRuPb8T7MNneE3Kr7FKLXI9/zIFFeCC7UcGL3IHEfWocedQgSwuhHHsUv5lussNdI8MuAXALCyOSjhOynWIx8EvzrDRSs9JudIPaVXYjaQ4zqHpFsghLSH1tpUe1Vnz/1pu8AzK52+++aeQJaDoX1q+TCI+VQA==
+  template:
+    metadata:
+      name: user-postgres-secret
+      namespace: sneakerhead-prod
+    type: Opaque
 ---
 # User PostgreSQL StatefulSet - prod
 apiVersion: apps/v1

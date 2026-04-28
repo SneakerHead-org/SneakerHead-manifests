@@ -14,9 +14,9 @@ data:
   REFRESH_TOKEN_EXPIRE_DAYS: "7"
   LOG_LEVEL: "DEBUG"
 ---
-# User Service Secret - dev (sensitive env vars)
-apiVersion: v1
-kind: Secret
+# User Service SealedSecret - dev
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
 metadata:
   name: user-service-secret
   namespace: sneakerhead-dev
@@ -24,12 +24,15 @@ metadata:
     app: user-service
     app.kubernetes.io/part-of: sneakerhead
     environment: dev
-type: Opaque
-data:
-  # echo -n "postgresql+asyncpg://sneaker:sneakerpass123@user-postgres:5432/userdb" | base64
-  DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0B1c2VyLXBvc3RncmVzOjU0MzIvdXNlcmRi
-  # echo -n "your-super-secret-jwt-key-change-in-production" | base64
-  JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+spec:
+  encryptedData:
+    DATABASE_URL: AgCiBAnEvfGGTLo5L3M7zokdFvHlnpvHeXVOi+atCskeT13LAuSX4t7Fq8UpJutz7QzK//zL6uCMEAYCtvNo2tXUbZ4+zvQY6O9rwocdWQee+MC96AFq089Z4MfKlzG5T6+jwzneEY27qrtnlSrHb3Zu+b9GPKNJ2aEk51/7xq4K6UBd71E8IsxABI7JJ6qvE1g0z7xxfk2yt3fyjeuTASc8iY+SGv50lQf4JxH7H9Z54PHvV4lfDsctcQpKIP7NUQXKZO5NZRzUU6vwd/nGkqQxsQkcy6ofu1GAcTFTHEJgdhwF6Jf8OQl2hVss5ZqDoGvFygYAUX8om+jvObtc5N5My4LEpSoUz0H6Mc8aiH3RJBBB0uwgj4ELItkQpzPuL6KprLFxwr2YTPGgjES++lSGnCrrZXQiTRAox6iG2hyRzEcCMB6r3keO6hwMYOctm5CaH4TgyuPlZdXs34RLDkJWxqrcWogJ/mdf6bam8WVZw3e7JbkT1Uqxrjgf6rW286H2lOKIOzJof6p/Q17xhlMzSx8Rx3d/uchTN9yoynuwPk25OO9tK7wIKaYR2fsYAeJY6ytSO7ZEsgQLELeCouz2wRkLSZBgtS6hVEe2UICCy9E0FgcSNgPoDURBgpkSlJBJffzkAQM9ziMgGY6tN/rJx0V/RSnnFcr6iLhdu+if7dN3PKKseAXW+AFIhTRKvTkx6PxBgfMiQwFiAqE1h4v5wisF8ytEE6b082E9Sm+UJt9CFleRagR8aDU9OAvuhYX0+54qsTizF8aKoI+Qc6JcSgDDZSE=
+    JWT_SECRET: AgAWWhyvvGNBU55QSqRqVZ50Wvb5FLDi4Bcgb2xK0t4agR5KNwDtPaVPXzWr/Vyxjdn7BUa/8jt+cXX6ecGeDsJSSeQW9mSt5WIr1vTxt9tmMorY4EdNPJl3B9hjXq7yz+ZyNTchTbsFR1IvCgYmbN+wC2qmHkd8+zc57tepUWlbGFpqUrqZCk8dy0lCaTYo6lXNHaac3cLUSPw1erHBLlfF5XQ473dK9WWP2dDj71ALROpcLmiY3eGhJFDdwFTf5d52Rrw28iPkTwvokrweutoFgaYnJInKcet1WmeNfi5KHHdwap8sTCQxl+xCrDY7f+Oc+pgFYHiJlRvQrDro1lsXNf3ppyU9U36g1NkTObhCcdbQ6cZQorslrM2GVgsWMHw4jgWnhAJ560tGu6yUtHe4BxISBhHbi8pcoOjWnptV1SP97VOutkvQDhDV8sJoCJgzpNuY23GXJIv46xvF+WvbOUyc2BlAt02A2ZWY2kqoawtpZ/e5XvIttd8XZnrmHlgR4KWnhTFDhRw7vbBd0JGayZFIupai1PF8UKUTyXfr0xIaYE0lP3hr4rEXfF2VcF6BvtIpGWxeTiaD52BoBb4UQZD90ljfJc4OihFARIp3BiU9BWc7/6/OnYqbb99ab0mamW2F/5JoAJbXx0Bentng8wAEXo90kiUabntl/I9VKELy5dQRRfhfAxaFUIBMMxCG5UFcZxnCzjcQ00Po/subNfVwBiRVNBx2gsPCnQ5bK343wblDQNysE8gzXpvv
+  template:
+    metadata:
+      name: user-service-secret
+      namespace: sneakerhead-dev
+    type: Opaque
 ---
 # User Service Deployment - dev
 apiVersion: apps/v1

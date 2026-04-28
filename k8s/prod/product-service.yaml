@@ -12,9 +12,9 @@ data:
   JWT_ALGORITHM: "HS256"
   LOG_LEVEL: "INFO"
 ---
-# Product Service Secret - prod (sensitive env vars)
-apiVersion: v1
-kind: Secret
+# Product Service SealedSecret - prod
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
 metadata:
   name: product-service-secret
   namespace: sneakerhead-prod
@@ -22,12 +22,15 @@ metadata:
     app: product-service
     app.kubernetes.io/part-of: sneakerhead
     environment: prod
-type: Opaque
-data:
-  # echo -n "postgresql+asyncpg://sneaker:sneakerpass123@product-postgres:5432/productdb" | base64
-  DATABASE_URL: cG9zdGdyZXNxbCthc3luY3BnOi8vc25lYWtlcjpzbmVha2VycGFzczEyM0Bwcm9kdWN0LXBvc3RncmVzOjU0MzIvcHJvZHVjdGRi
-  # echo -n "your-super-secret-jwt-key-change-in-production" | base64
-  JWT_SECRET: eW91ci1zdXBlci1zZWNyZXQtand0LWtleS1jaGFuZ2UtaW4tcHJvZHVjdGlvbg==
+spec:
+  encryptedData:
+    DATABASE_URL: AgC95HuJ/AUDFszPOqAfK3goH++GFnyFCaVQ9HhXnJRqEDiXj241yTRNvhkgEdKl9/JM24ckIELShfN+Uk2Kf+4YlgBYNckuZJvEqA/+R+BToHXFFEC4r60Gi0oqSNkRj1qBYotYo4SHz0dTVjHjGZL4BrWBW+DMT14ZnWZ8kZUCJ9i9onYaLgRsJAWy0hDG1udA3ltaYJgF4vmHrWwC7s0uueIMB2VL2S3lROPPFWpGJkqYN/LQAzD42SzgK1Ja7nqWzIOW4JHk4NNGJzJouUAyO9yL1oTuutppC/gtjwMkf60H+/FX1FcoSP/wPd0GyaUxhUfAQaSCqUH027+6e+Qd5UL1t++RebmyGgJqRnoZ6JEOOvtWUMgTT22Q1CS5LxJ546A1qWGdIMKwFLoMLQRWPj7qNHgxSe6qaYKqd2kMBGcOXl6YtGThfP3/z75xz0vzSSyZeHH36s5eBm3pqqEdhMmGGvyAlxEPndMdTwWMF3Zx8F1EFIriQ5YWzRT4rtbUmUKblkEszQgrrn9EOmIYFvf+JpEO/N8XFf7soHHCl838fJRryi90f8hmiyMarjcgmkJvPVvo9JwfvOkWEw9qMo3KybEP9P4gGL5L0Zg9KVYsKJm+fRhtBtDMEAaDZO2CBs4cplLcgZhfTJsPjFn0XMKpXzC1Xd8lhzcp+hHI4y5deUrpF29TLpjAFBlwD6DqkoTcXx0/7d0dL1MXgdtq8YC9GuCd/AhWfn4VOTr1lVBs3KfzC5FUHj48Mo3MQK3bgVkpoAfLwnnxlCV7wSpL/1jXgJiZfUyrPvE=
+    JWT_SECRET: AgBRzm88ozBlRc7ti8vzHRp7XNIkWV5tKuRZ18Doqz5laicIJk6/bNHcbq2PLnjszh6jA8EQB5DfHRp4WkNQgZ0WV29i0lnCVB3a9N6HUv5LAdzqaLMQzLoeijyobPIOyrEoKezrkIKUuPjtmBZXJ3KepJDTLpYj2V6+3Z1ZSVot0KoIT83/A8ygDZk7At1yRyHQwgpKnz75EL2hWDhOfXu20WoQonH0KsI3YESETicP6ViTb4cMBthqZOoiPz8ZYEFX/sa4m8SL/S6XmH9WyIZjNMdq2/Fwv2UFiwhSXgRbrkwGLqXYP1b+f4wa4hph59+glgL9A2EHRyR2IiaYyJNAK1xbtEK+dTTlipcF0Y/216nxfT3ks/o39sJGXcW9z3Fv7YJ6APNyi2wtvBwiSW0NMjkW1zQeapzZTmBG1yBYepV3S0d7Pcu+Rv+8r4Z9MNv3RoGxzXGZv//7RgG+mPfEwp92uHYZ1Bt01sJgI16okBE41Jtc7SwZJrs8yhjo46XvunyP7fgOlgKrPE4zPEIz8FHWoj3fVwlI4e2RluaXu9D1l7lp0GWLHCUE6Aowye9U1kmrEhI+mMb+WzV3j8bjKfktNo3JUXEiB7DY1xcKGjjQadklmAPsR33IHv8EtIKIZBa53+RmVjcU9mCwsmgm1XdURHqv52Ms8fAa9y3dQgsREquiDTIP3Pn7TX908itqLcHyT0a9ILg4wrMZ08YpbKawtjwqB+n8T7UA89EDraO6swwi06om1oTru3TL
+  template:
+    metadata:
+      name: product-service-secret
+      namespace: sneakerhead-prod
+    type: Opaque
 ---
 # Product Service Deployment - prod
 apiVersion: apps/v1
