@@ -156,6 +156,19 @@ spec:
           port: 8002
         - protocol: TCP
           port: 8003
+    # From Prometheus (monitoring namespace) for metrics scraping
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: monitoring
+      ports:
+        - protocol: TCP
+          port: 8001
+        - protocol: TCP
+          port: 8002
+        - protocol: TCP
+          port: 8003
+
   egress:
     # To database tier
     - to:
