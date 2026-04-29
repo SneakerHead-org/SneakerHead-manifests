@@ -39,6 +39,8 @@ spec:
     - group: ""
       kind: ConfigMap
     # secret.yaml (user-service, product-service, order-service)
+    - group: ""
+      kind: Secret
     # SealedSecret CRD rendered by Helm; controller creates the actual Secret
     - group: bitnami.com
       kind: SealedSecret

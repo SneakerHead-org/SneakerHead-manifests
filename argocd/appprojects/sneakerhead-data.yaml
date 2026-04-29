@@ -40,6 +40,8 @@ spec:
     # config.yaml (two docs: ConfigMap + SealedSecret)
     - group: ""
       kind: ConfigMap
+    - group: ""
+      kind: Secret
     # SealedSecret CRD rendered by Helm; controller creates the actual Secret
     - group: bitnami.com
       kind: SealedSecret
