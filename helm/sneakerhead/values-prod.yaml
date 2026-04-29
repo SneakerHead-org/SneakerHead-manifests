@@ -1,14 +1,9 @@
-# ═══════════════════════════════════════════════════════════════
-# SneakerHead Helm Values — PROD Environment
-# ═══════════════════════════════════════════════════════════════
-
 global:
   namespace: sneakerhead-prod
   environment: prod
   storageClassName: nfs-client
   labels:
     partOf: sneakerhead
-# ─── Frontend ─────────────────────────────────────────────────
 frontend:
   enabled: true
   replicaCount: 2
@@ -34,7 +29,7 @@ frontend:
     cpuUtilization: 60
     memoryUtilization: 70
   config:
-    VITE_API_URL: "/api/v1"
+    VITE_API_URL: /api/v1
   probes:
     liveness:
       path: /
@@ -50,7 +45,6 @@ frontend:
       periodSeconds: 10
       timeoutSeconds: 5
       failureThreshold: 3
-# ─── User Service ─────────────────────────────────────────────
 user-service:
   enabled: true
   replicaCount: 2
@@ -70,13 +64,13 @@ user-service:
       cpu: 500m
       memory: 512Mi
   config:
-    JWT_ALGORITHM: "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: "30"
-    REFRESH_TOKEN_EXPIRE_DAYS: "7"
-    LOG_LEVEL: "INFO"
+    JWT_ALGORITHM: HS256
+    ACCESS_TOKEN_EXPIRE_MINUTES: '30'
+    REFRESH_TOKEN_EXPIRE_DAYS: '7'
+    LOG_LEVEL: INFO
   sealedSecrets:
-    DATABASE_URL: AgCZvNfBTlABlj6Yn/7RQSQOXCly6CJM/uocKKETEuk7F1B3phF0BhuGnmk6XadVb6LpFAikRuZ37UN3PNbanx3HMiaCZ5mD3+laaMQGklrfkTkhskkAg2vikBIBWDYlN07EdrWmYZgeDlSu/JuPJNH+XPzFAOntzWNvqp6UudkvCuVbQRXB5KZyoZCcAMapAc8C22aL9R+9a6tumUxc0lE+ExyqKYR4Atcu2tT1c7ukYVgDVscE79CHACEySXvj1HqoRhjVe68lek/5ZENxmWumW/JJtAlkhGWYOei8+fEvSypZCE3W8wXSiXOA7FsHmDS7ypzKbroU19RGWCnpISKsfUg3C3DkUm9jbcIUnfiqrlI+wFKBjvFRATs7veUDom9tt4///8c14boAPRpXfG+0gnMSSANYAilW+5lGrmZsDruaxUNA/gVqJLphuHZqtAEg10us2bOmUmFi1okcx5MKLcFlV+pNZjAq10pzrX2MWul0BZolXacUUE+xAdBXD8x3oGFyluRLAcTeR8B4kjommAzpJR6Y2RiM4DBDc6zWFjtzRCCm9E/1lwVEN8WMi6A3ZTQB4/4VVqmaYtUoR3KsYGqO6XKL5vZkNOOsrR/K9Cuo24vn2cKIcW1wrnAMV1VLHC1wNv59SlMwIB5UQK1FoeAou95TZ6p5yqxSct1GnxyO7cLD9EACnZ+FNHYOAF0csVoubokeALzALHpFN4uD9yh7ga1ptgCdCWM2wHnAV96wHpU8+AAthcdgEuhdjOLIr12q9kemgzPxBvLy5ws+iOKqkbg=
-    JWT_SECRET: AgA1LvUeN3TeF3F/353LVgQ4m8yyYEdKNPadVN6fyz/T1V6Vlbk+ZldhtgDvPX7OSFKeYOy2OCKLnE1AFm6X0V93m4Oyv+nVXJBMosivoAGwOAM093o3nEiJF3OUkcDwasLlOcw43sslJ+vrifH/C/LAhoQiSfqEPkhVJtZwJbTnBJMtZ6QY9cr1k0i6hAEeGRUIhvq3hHY2XQpxzLrOzlg9LSw8ARvtokWVNc5U6A0ki4XqLozAEDj59L7OtrPAIWYhZn5xV1ZzWaHj3jiCi1/i+AGM15AWTY+lrUGdp9APK7CKbje9MMo2BYdCQNOImyErOd46YqJhSNwMMeypdM/ccqaAmXqmss6J3584ZH2kki9jletsRyW4aSQoXL/cXvAogRYeS8kZkv7jk6pR6MSVNNJtzeKnt/AlWuUb2imHikv110k5Swan7hqntETvUtyP2M9xNC6Nd0aD0NGG7TghiDxhMTSpWztk4xZ0UXVAXDllXuycTPzIU6sXp7VUGakG1A1jdP6FU5ShgBswn07ZwnotGPdjUTFBeWAXxVImz3y+ZDPHUWo7SUAmwY+jXnKLjAq9ac5B7yMC0UrARGV2N5w3mnxt1KSXiJHYsAQ+u1wZg9jn0SPi+U8b1TFK9lVJ1TsIBKEp3oonTbonhBWsg8E9pf52P5b65p+TzlKW7y3Q4B/UOHzJ+6BvUUVb1n+6WvZ9wTcmqI5I72ss9PshkcZoqRFPlLQZuoWsJ5vyP7CKSz0knjSEGX+AFjTx
+    DATABASE_URL: AgAf8WxKh9DTyBjh8TBo2r3kTqmi/wLmZpdMlZttqwX7mUoYlpTevL+sVq+ILaB5yCcM1/9c70vYzYwQrd1u2eB5G840uf9WCizuS7+gQXEd5XhBT/T2Dz49Lw+Z5XAxZG8kmRx+l18/Lkoxn7Id27yPVr2fz2tfwzcNRwrORQJkbPoaSNUa8IV4nbrKcgwDCvpdcN16ZhJd4dD58W47tWiQSZbfp1TMV1zp3EqMz2Fjnkm+YW5ezJNjffAaP9pV1pfJactp9jCKxfSpUwVBYBKXyxMBoIR0h73A5711kKDZSyOZbKb1G0qrDXyRqZbtma2fkRFelK0kaEz9OTm0ZigilMGYv78i7HakirSiIinAX3EewuEiKkigDoKqUcxjA3wfyhFpps27v4IYaGkH17RBlVUth7eJpFHkYfTr2VHSCVrawnS8fq0lJraIih9NV3GvF5EEY2/vZHtBLnsKJrpVtmqoiEofOqQlK3lBYyWOxVmmG5uJi3MT8y+1mrgZ4AyxoNP9ZKuZWhV8v5huHZYUzXgwZelinN4jQoble9BHWfvG80fGWEh2F51pQRZUixAG3cVoG3vRhzEucHUxyd6y2AVEo241MJMnN1ctoX9WMjdu3bBJakSxb4Upy3t6NjJLrphDz7xID8ZHswT/ZQqszFGuRfsDyItfZro1vgr5G5G7z9Mr07nUHVH3h9Etd7noeXnfrXmUtwAKmv69jMWpQ+TSs0vyOwTGIK4hQE5fc5Hye3xspzMVkXdd+QRtk8gXG0MuRtmBuPW8cjDrqBXpULZm24g=
+    JWT_SECRET: AgAtxvAKw6PJibgBNDHX8Smgl03TPy9dNXU6NNuqPVw3fkG8MZgA5my03bNFVP3MOHHYrbUAUejvmnh3TVeFXbTm2WtKFSLDxZC179W+AjccNFncgtP7vqJt8nIrhPmFDn7YgIIvCNr8BwTIzVK8uE4Aj/7k1cPysK1xKTVKohWwOZ2TD7fVR8jnp23ah7+xbTjDcnbSRe2Tt6UH30gwPIb1gxN5hI1zwmpRZ7ftvG7OtrT/UKr6hvQPVxHvthpk/LLp6Z9t7ssQsYTjk+dPNqjHinTr4AYYyVFsiho/w4vXIZ4at6EF76pZNL1Gq2KdioWIWZnKde5ojoCTJto3OVL2DKsefrPthw7hWapXTq2jdcq4hX2Zgkk7AZSipiQCl10Yy1UUDxSGGEC9M9xoYwdelixxJCFpYgUZl3xCPpxOZeDgnpoWTAA/le4lJlSIFgQ7gjGEFwdglznLftqzVPTdZq3VjJ9GDGCJGKPrlnh95HYbFewp+rnPcoB+YsFdHihb1EYDVryB3680D515Fowkv2KEcGd7TBAhDeIkC6HCfQxPkUOsnF9vM6+7ME056P0gHUEvHMH8ANlRb46y/puMEwmtH9e2E46kxqNA87b2yE6jmgeX2qNYRb4dvoNo3H/WLyIE8BFRO9PIaoVfyvBkKaDZdxv3/6uyzqmaIqMj/7+J5l5H/+wmoQeIGNZsMn3Z/DQg5TuJ2tQyUMwivbNRR/XEUWunAKww4mJzPWPr9+NOZJjR8kX163AOHmmj
   probes:
     liveness:
       path: /health
@@ -92,7 +86,6 @@ user-service:
       periodSeconds: 10
       timeoutSeconds: 10
       failureThreshold: 3
-# ─── Product Service ──────────────────────────────────────────
 product-service:
   enabled: true
   replicaCount: 2
@@ -112,11 +105,11 @@ product-service:
       cpu: 500m
       memory: 512Mi
   config:
-    JWT_ALGORITHM: "HS256"
-    LOG_LEVEL: "INFO"
+    JWT_ALGORITHM: HS256
+    LOG_LEVEL: INFO
   sealedSecrets:
-    DATABASE_URL: AgC95HuJ/AUDFszPOqAfK3goH++GFnyFCaVQ9HhXnJRqEDiXj241yTRNvhkgEdKl9/JM24ckIELShfN+Uk2Kf+4YlgBYNckuZJvEqA/+R+BToHXFFEC4r60Gi0oqSNkRj1qBYotYo4SHz0dTVjHjGZL4BrWBW+DMT14ZnWZ8kZUCJ9i9onYaLgRsJAWy0hDG1udA3ltaYJgF4vmHrWwC7s0uueIMB2VL2S3lROPPFWpGJkqYN/LQAzD42SzgK1Ja7nqWzIOW4JHk4NNGJzJouUAyO9yL1oTuutppC/gtjwMkf60H+/FX1FcoSP/wPd0GyaUxhUfAQaSCqUH027+6e+Qd5UL1t++RebmyGgJqRnoZ6JEOOvtWUMgTT22Q1CS5LxJ546A1qWGdIMKwFLoMLQRWPj7qNHgxSe6qaYKqd2kMBGcOXl6YtGThfP3/z75xz0vzSSyZeHH36s5eBm3pqqEdhMmGGvyAlxEPndMdTwWMF3Zx8F1EFIriQ5YWzRT4rtbUmUKblkEszQgrrn9EOmIYFvf+JpEO/N8XFf7soHHCl838fJRryi90f8hmiyMarjcgmkJvPVvo9JwfvOkWEw9qMo3KybEP9P4gGL5L0Zg9KVYsKJm+fRhtBtDMEAaDZO2CBs4cplLcgZhfTJsPjFn0XMKpXzC1Xd8lhzcp+hHI4y5deUrpF29TLpjAFBlwD6DqkoTcXx0/7d0dL1MXgdtq8YC9GuCd/AhWfn4VOTr1lVBs3KfzC5FUHj48Mo3MQK3bgVkpoAfLwnnxlCV7wSpL/1jXgJiZfUyrPvE=
-    JWT_SECRET: AgBRzm88ozBlRc7ti8vzHRp7XNIkWV5tKuRZ18Doqz5laicIJk6/bNHcbq2PLnjszh6jA8EQB5DfHRp4WkNQgZ0WV29i0lnCVB3a9N6HUv5LAdzqaLMQzLoeijyobPIOyrEoKezrkIKUuPjtmBZXJ3KepJDTLpYj2V6+3Z1ZSVot0KoIT83/A8ygDZk7At1yRyHQwgpKnz75EL2hWDhOfXu20WoQonH0KsI3YESETicP6ViTb4cMBthqZOoiPz8ZYEFX/sa4m8SL/S6XmH9WyIZjNMdq2/Fwv2UFiwhSXgRbrkwGLqXYP1b+f4wa4hph59+glgL9A2EHRyR2IiaYyJNAK1xbtEK+dTTlipcF0Y/216nxfT3ks/o39sJGXcW9z3Fv7YJ6APNyi2wtvBwiSW0NMjkW1zQeapzZTmBG1yBYepV3S0d7Pcu+Rv+8r4Z9MNv3RoGxzXGZv//7RgG+mPfEwp92uHYZ1Bt01sJgI16okBE41Jtc7SwZJrs8yhjo46XvunyP7fgOlgKrPE4zPEIz8FHWoj3fVwlI4e2RluaXu9D1l7lp0GWLHCUE6Aowye9U1kmrEhI+mMb+WzV3j8bjKfktNo3JUXEiB7DY1xcKGjjQadklmAPsR33IHv8EtIKIZBa53+RmVjcU9mCwsmgm1XdURHqv52Ms8fAa9y3dQgsREquiDTIP3Pn7TX908itqLcHyT0a9ILg4wrMZ08YpbKawtjwqB+n8T7UA89EDraO6swwi06om1oTru3TL
+    DATABASE_URL: AgCaztKCcMjlqtewnRMrqPCpvdZFTkNx4SAfsuK5bxURQ6/AmXAqEpjR5A7oHnZA6GZO/+dqtFTENt5yBp9x8kvTYixJfOVqubxUatLMg/bSvl8xgm57dWjqoh66IpwAAVDsXhfqwALuVGiQbAr8snrDfrcy7tOE6gVWdAEc7VK24Uw5ZRTrYZ760Po5+9IEG1owK85vOyCBUtoSpHIfWHOhITG2HatvE6RJkL9ci+0PPkU0phTocgkb7a/sq4jb/KLujq0VPH4bXiJXiRoOWCKPj8gdAlzMf354QtZ+BXbvkQetNeGGl0xkLlZqMe0M73TPDH+idwu6a8VBW+rS+htfBYsG6EEuyoTGNoyqEqvmix8q1PLIffvUVKWQPMk/fwC6PTZvDiZmwlhtPI514dmkjOR854gHHz29zo6d/jzcGFSV4ZIM5azlWRyegzTBGhjgrkVRwgjyOaFo2fswB0f/tu1bLs7hs5xOiDE7qyUe+KcPgjzErTpzzM05M77WvGuU10tMRQbU2F5z7rERGSLeOhsOOdEEBWeoIsEdRCiDS0dEu5lJr8kCtqjq5suwDJsyBVA7s9QcIrP7Y6ZjrcseEH9R6jhBEpdtU6hFjb702yp2ptYBN8jvd3/zbADx2UrJOlxVLbNNBSODAcII9QdaSt0KiyFX5LcNNege919PyHv9SSde46pII686X+DsuLrlqQF5HN3I5EF7RizHL4l5fCdva5sPbUVwfaPgxqztdwPogkwuUOZEy8CZenizLLHx9A0xoKoyHx2lIq4rnISY2cmKpQPAi/72S/A=
+    JWT_SECRET: AgBjBXnRwY67/h2NI2fcDEUPxGrVHydbZwTIe1UlYA/dx3ydUeog5jBbXfHH2rsR9HaE3nGiiJix/EHDGfoqaekw8kUDaTzej+fDvavsBcuIGJX9QDaG7AFMPnaZXKRrQz4+7BJWNhVQYf5j5E3kjj+xcOGtaceSy+TKkscsPSmqiApP/j2siwlWNISqoV6dNMP+cX5kDwsTH1GfdnLGI5rcJ7aoIv7jIrDn75GWa6Pt33cWvY004esSnWfhNW+XvpIaxENdiEwMBK/z0+nr4pKqz+Yb+Bj5UxWK/14Ra/waBsVvJcveNL0CsM/FfO0TyOjnWDy5skmAKhHre4yeh43QVunKYhswbmgk5ZYU/62jpXObGz66OWu91FpBMzr3gTQG4Rdp3WkpBrf20xMgwO+HXLsI8TWnurLXGmxcdjBbgfoHsReJURcxsjbKANJeVCz09Zuo3kr4yaj5adqjcuwA/tkC58buXd3JmMz5AJE/iyCxMlIFYbp/C73EgRgThM2GtW3lt0j4neszMLv78y4kbLihjA0HEDHcPbjNVhg97K7BncyLjdQ/aHm8rzkLVa6NRxBVaO6SsMiB5n+XvIPAwVSEXAGVg2bSoqpEYqbGIlIDas9OrhoIZk6Ju6pzKEY8QG4YnHbKNZ5T5ktVGKWr/x++4Z7viK8ZNtCphJYj771+jaNXM7NdF5yMjS8ZJyWy/B3wUGat0cvHq/jXNg/DMQ2+JMDfMPOI+QwM1rPy5XYr3zUXgkUh9ukayKvs
   probes:
     liveness:
       path: /health
@@ -132,7 +125,6 @@ product-service:
       periodSeconds: 10
       timeoutSeconds: 10
       failureThreshold: 3
-# ─── Order Service ────────────────────────────────────────────
 order-service:
   enabled: true
   replicaCount: 2
@@ -152,13 +144,13 @@ order-service:
       cpu: 500m
       memory: 512Mi
   config:
-    JWT_ALGORITHM: "HS256"
-    LOG_LEVEL: "INFO"
-    USER_SERVICE_URL: "http://user-service:8001"
-    PRODUCT_SERVICE_URL: "http://product-service:8002"
+    JWT_ALGORITHM: HS256
+    LOG_LEVEL: INFO
+    USER_SERVICE_URL: http://user-service:8001
+    PRODUCT_SERVICE_URL: http://product-service:8002
   sealedSecrets:
-    DATABASE_URL: AgAA//Srj5lN9qBkyY5Eetkik3j43hiSjLF9wi8hfTxe24JFyL+IRtjBThGcJkNPmcoWcySFQT5m+Cp1mK31WVOUmuyMyoCEXhqbcfb8cUX68xJGFZbo8rk9/zqHe8rPWC95DDo3GpRsGWzV5Dd1PhJuUqmjv7GplPZ5rjmDx7C3laVM5SuD/3w9aDFl+xB43vtuS9TryR8EYYmghCU6Hn4fUuLOiDWsT8PSLfQQRnVxdwOj3xz1kLdyXKFtLTYMY59E9XAAwE2HwLCfLrpOIp/UJKDv2g1y+s3mAPAfbhTMV6SrmJWHdks1nKOUt//tssrxZPZxatoTxjrNJ+6r7w9YLn5AdxlbHc1Ct92gEWGQXENEj1eXIEylglUXBQAIzvtUNetVZMPhMwZM0sqOdFezivzSuHPvbZz+swyQOiKg7y0bOyyMyq+iVxJK6x/K83R88S3nlIcGZObZDlGUPp5A4UXeGI3cQiKngNQvgWWK1ThwkUp+vnBuIOwY7F17qtOpcP45SR593E+4U6x+CYLgizU1wo00y5HN+xXb9H/Gp50xsd7LICzfCzRX3R0oPzNCBfvcfmw/kpy9iwf7/FzYAIRmtQZZf2oz1KyhmogzmwQfgiJLfwL11Cbm+1vNc6YEG0qHsblTNlZsQ4NCHXFUyyb0mxmvFCfYhyRfn5LMZYADrePFBSZ6P2Ijov02pVKMh9zl6FZ7Mi0XrUkTHiF0XdXMXQjI+nI1CK4LWZ7CEeAaFuhKAixXcTJRpdRJmJgSwQNlaJhLre6qepYgt180vS2PbwUZ7A==
-    JWT_SECRET: AgA2TfxZ54SfOc8s0Je7GhLghxjyEvyVd3TPaJX2G2yIQP3IKeIcL5XMSbj/PKcK/THJcCe4eCvaogawWpw99YV4jrFtz52SajS+1KZjeCGfxrsoiWQSNTj3OteT/YhBlNzCkKkNRbYAbOmUIEjrX8e2WIIVfTWgqWKgDJIKVWdV53aB6tO98KxLWPrbJ6QU/B37sitZFbewCfJOSVakowRZ0zwUo3XYJc0uzg2elIWHTMTSOkfD3sRMHJyd8R/5syhwj7TO6wy+uMsh3RAwOJ32ywJ6/F6oAp7YP/Cela1VhLiX4+yDcxNkQuQ9JFlG7F8a3kwlxdPubyse4Ejz/1EiK+wtz8a2ifN7xKZJr0rXETKtWntjF7iNSLCohFO8aQxokxaD1pmsYln70pSyrnoNFj5GwibCwt77Bmm6bjRM+xf1BgIDYoH8wl8PLnb48dBrsXo5NZAbhyMjQyQpzLLSdY35Q0kUvVExd192a47NgS1VlgLYpbhJOjlhwnuBwnFmd7tglEF8jCs8vyUx+cio9PvUdwzX0768vbz4n5k9tb+dCJ6obfW4LhdNsVmGArKt6KaH/oEWtls9k5CC85EaZ5CvuR7JCQPjkcF94Tqb/RFH3qkSWlLwA8xgWOzHH1jBclZsaOcCOxb9zW57SampTH2UO/6Eo4g2m5nikAzs2xklACKPRU+HTufwggl3qQRdQFKeb3eAVWwU3z8gr1HMo9tOD4SaqmL9Slqww4JGFrWzoMOXNO8xRPJotU2S
+    DATABASE_URL: AgAzGEjBSZPTZm6tJy4wkHEFACZG6eeA3XWvtQL7ggI51nY6SBmt2ibQXyZRQlK5YET72izH3MWfy1CmCP0ZwMR3b72y6b3lU2320dS61Xt84twkzdLpQQATTCtxazL8YIRzrLrLbKm+85oJdvrSw9vI9bBUESFzwdbRyQK0Baiq18YxxeN3VDZS8tRstBLYxJvKwsDJWoVJ4/AcTa3V5IwaH68dK0nwqcpyhNwa3DIedBav1SFE3iXIEknGo1mNguMmiMhMhd06nuQWpdDvaNwQPH4A8IKqCQlqR8TVJMbNlO5+rKhgErM8IprkXC1/0BlMvJGACa3711d6ftFK7GHjvCQuMKa4c+7DM2zmyZUbhdi1acZPdC6IjdBBkYJSiK0hTrs/wa57VY6QIiLJqEchLgMt68GOdNj1jfQWMYrPiSE6uGIiJ3VEwfHmhuikYcGK8YlCwFV6OIPsU5FgKDOCI+cssxwP68d3IcH/sIqsRkO3/YACQZfDFLZCtODJ7Nyx2OVwZ4LJILXiq8y0mzXOwau2ILfO2tGzUi9TYy3XoKzIrYuDnVv4mE7dOfk/+4b6vqzP9mZUOmPzBAK9VM1WSS6m508gKxGlHrpQGMv0aV8oKqRloVMBr6cx5P7l3MS9pmuPzhYvR0W9uwL+ZcUxqfji1mYiuhPf26gcyoakZltEweXX2+qpf/R7zoHoQDzWk/m/LHRr4RqyxtRsZ7Xs1QLzGylC6L2+zvbYdHS6CtrlQUXk4FwoqFf56dAdY89e2M0z0yrJWAsNDM2sqhFtbDr0yQdWSw==
+    JWT_SECRET: AgBEq7/2swCvzblUryL+18Cr92Qw6jyAYM+hO1O6a4xkz3R8YWkdPkG+pTPpGl5GemZToEhYcXUnzzg40KUc4axpWftKnj8oTr/OjRvOWUtIQsDnfgLk0Y2vbTwkWplJwbWUK0s0r3f/0tiT3UUMVAY1CHlHhWp1SFvzW0yyBZ8/dl0c6NlTDUhgk86oot3Ok2wYkG6rAep0UnoQrtsiahRIxrmf+40V/nxpUtXAVb7jb9kUE9OzixejZ/++hV3g1L4CUXaSR+tjPhjFi4mA7RnxsZ/GHeKbJTSpeluvX8e1I4GEqBxeOP1Lac92w2RDhk7EKP6L9pBJTEebkscTNK1p2rXFUOLkky+CUB35WBHQSvsDfYDQ/zB8xjC66/sBzHT8yoThYHKNZmBeeYCdW6ny8ywoDgUB7JWMYvqTFHJOlVdguZr4pPXIC57CJLRTwiPb1n23r3G9YniYnXDO/X6nY1k5Zvx30oT9WtbUNRaj5mQniqWl/zBXbqdK0CDbVr9ghokmb2vyTgxsPqbhKLMrUYWh6Iigs1VIwZozRnZNMa/ZWJkF+BpU6THHGPBRa6i9b9l2I4vhatzG4vDpUJweefOEI69bDhm7raW+IO0940TdbrlZKO+ecfuC96eC1CNuIcFLUGId+7i9wLHsE1c1tpMOna2ZufCn13MZ29dDhO21n9qjyVL8FW2rnx8LQuDtKoBYR7ygg091AYNfuuYHyEq0t0xo40VHpZKubD4tThfeeHGycyZCXoFSDHux
   probes:
     liveness:
       path: /health
@@ -174,144 +166,182 @@ order-service:
       periodSeconds: 10
       timeoutSeconds: 10
       failureThreshold: 3
-# ─── User PostgreSQL ──────────────────────────────────────────
 user-postgres:
   enabled: true
   image:
     repository: postgres
-    tag: "16-alpine"
+    tag: 16-alpine
     pullPolicy: Always
   resources:
     requests:
       cpu: 250m
       memory: 512Mi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
   storage:
     size: 4Gi
   config:
-    PGDATA: "/var/lib/postgresql/data/pgdata"
-    POSTGRES_DB: "userdb"
+    PGDATA: /var/lib/postgresql/data/pgdata
+    POSTGRES_DB: userdb
   sealedSecrets:
-    POSTGRES_USER: AgCpH0iUHSwEooxrT6POEhxPexb+tiUxbZKjQkh0eY5qy1gpybmLP4TNIDIX3My3Dietv7RVami7ZNuBYm0lranUE5WKgEkXuGxni5GNFzyb+5aEfQTK0u1JqnowxbsgPUGhD5Pr9GHg7H9DaWMzI3VyXowlVKFw1/bUQf406VGMKLWbsRa1VEQwIz+iEtp8qfykJq2JQg6vnOEw291YYzg8urIo03yu9MA3KkR0ioI1FuxvSxEunG9yBsn/qx8YlrD4mJftl2fWyOuH82ZN1G/4CEXPsyI/2iG1h8yNDUktW9mzkJ0yPYcAupV1rWsShcHTIXm/n+wroxyY95rVIJand45VBaSDHhz+dcXW8khO/cBtcH/MP82VUPKVwT8Fa9I78TR/JwZGZtNKKnErpqEbizqOgORN8k8OBfuGNroJTvKUQMy7K+1hzrxzJzEtSabupCe2KN3tnW335BogbSPBk+VUEpsL+8kR5LtZNmrqMqEOLheaEbXe+/IOH1+UJykCA2WBmyvz/KtjhWzbU2gSS6VR3A8GoJaCMRkO+u/+kfPYnwZ8w01FMu+XgDg1l14gpT/K2TipIZv6gFMI05+jsVyP7W0nG62PsRL3/vsO8Vh1VVXY8jdrw2Bf6UDsA/fgZzTEGU8kCSgPtpv5+ea6o/aSeXiOvJv/BVLMiRze69UVSyFAjD6ou9rgcNRZU+IMo+3NsMrS
-    POSTGRES_PASSWORD: AgB4oX7J7vQn9ac3TqsQt4QYqXE64rfTlG+uADsEUYYZcBfgsXCWw31KuRosxMFN3V09WZ8hD00UYGZbFXmXEIogQjxdCrhLOT50p7MyIwoW/lKd0EcayoP/RBo2dPQQ8dZLvPWuDSZD492UtDXQ2+9JxcCnv0+flVZH/dtRjDvjc3KfivJiuFHUSK6SYadBwe021N2LIDxadFrW2ih1qmdD96dVFkys8Bw38Psihmeb/HYl1pdCCsgxzY9Kuvtb53CLI3Ol1KcQr2gK5ee4uTdSEYl/fhrc0hC24A1RGLIlvTt23rrFKEePRRXH67atOMFVk7mZ++hCD5B/TTQ9mzl+m3jvC68e1JAIbUsypCgsHHGoc+vcEfbTidGlei0e77pYXIxU/U2uHUtAzjMd/lASlmq0JjUXtjH3r7emdU8sWnR01kSx73CIBlx9s0odg04ZxRGB0ugcQ+3vcTj9kJnQxN0Rw3IIldfjgaTn1wsrBEmbiqydswto8yUVKgg3j9RZ1DfRJidEQejLahdpScMQQ6EZYzieu5yaYUn7kbRL9jeYSH+RC1lzIRuPb8T7MNneE3Kr7FKLXI9/zIFFeCC7UcGL3IHEfWocedQgSwuhHHsUv5lussNdI8MuAXALCyOSjhOynWIx8EvzrDRSs9JudIPaVXYjaQ4zqHpFsghLSH1tpUe1Vnz/1pu8AzK52+++aeQJaDoX1q+TCI+VQA==
+    POSTGRES_USER: AgA4slh0ehmkOQqofbCO/8JepOSTimaSPtNmwd0Ehbo6TeQvWNBYMwGf2vHgoqn7ty/sb4oGQc8157Ep5/dMiQzvmlb2iCZ8D65Gb8q7rAdbCCL1A1olTKtRZPO5xthkE5UPWCAvvtCKvwUcg5TttYWRk9TTw7iEJfPHMISbltQWSuwFrzez36dBqz3ev6W5q9G8g0mZ85EjCo7qTnn3DT+FpFAHX9zYnBxUOLt90/txLV/EPTSAeJfpbBROCatCxULGij7RvhPx63tnHungveA6Rlw8NgSE1qzXcYeDEsr+xuxT+uI68dJm83XK6Tukw77GB3plj8suDO+hfXk9hOwdXLO6XKbfhCyfO9BDK9ACdSWL3RekTG6G6ChB3SOlzT6qCBDG+uu7/t799i2E0Y135r3i00EfZsLIGYkYk3ndg1R5mEIWg1u1jCCzBM/LQwWeNiGWzTDndrqaeUodZiKkNg28571ebjRgixLUtzv6j5qcV2FsbruJAwHzQYJjcoyInFFSQCmwGjzWKv49OCDIxuWIYXgK0GWTJCd1R8Sr0ABH7shpfvxJsoTQTaR261ysjm6ouFO8HaMTgmjr2x6g3u1t0NF7PTUPNH58Wnf6+Y0AdqG4+b4RRdpOLyuBcaTVodk/goHy1PcWEBq50VoeFQ0WCz8N9HEDFHvGN2+B5qyKIYTV0/fY5Cv/gB3GrSdlceSsgd4J
+    POSTGRES_PASSWORD: AgAsC471lxIF5Lj4Vp9Vwx+2rFk4OQTVigJFVkcWI48tEVZcOeOTKuIekVF6jPc473Ct37dX1w7fLmu8AfJS12XqusNtYPVaWyxl+I+ZdHtRJcmq9rOtYjqLQHJOxbchTXAAI4WNJut2nuduSCwE3eGmo5xOVKzyUT+dOJKbYOVJS7UTpPv4oCJlRbbrL97ZAQrWHf1LWxZXe/7KKoK3ShZZKoFvjot8aX64SoINSirUl/noLdI6SgMaA340NBqbSOdvvt76i2LeaaWEEglA5muaSJg9WMSmt3aY2uhFho/EUoiLuZByUWO154JiC/p2Uj42ZRbTzO6CBzcoYs2vcL3y2hFnjIo8iFwjcUoC+eLedRQEDD1wyLUyuYT9RyP/6uK9iNfaNExgfnW4KQ7tLUac9TMo5SP924uHhsPYnxNF62PBVJZurnaN4Y0yYdzfO54OEpTPQ3/drhmnb6TeUJ2Z6K03E+Ee9DD7KIl9aeTL9HjSeP3O2QrpPKURIvGcfMxi3az6jUYfXPnATze/Q/6Nf61X+j7TM5AU34ylZYuDhD6IBLXLtSGH3q0WWbmNWtSibIAl258lb+eLULcQFzF8dJcCuOcp/PY0YzMsF4AyaYO1GF5dVs/fwyEFy+yxjPcnjn/44dt3lzAIWEBeKJZkdZ5QwmetMb1X6QiPHPiMe6bmxXQWxbhJuUGEskR3wk9QFCZ/wgkRneo+YrA6wQ==
   probes:
     dbUser: sneaker
     dbName: userdb
-# ─── Product PostgreSQL ───────────────────────────────────────
 product-postgres:
   enabled: true
   image:
     repository: postgres
-    tag: "16-alpine"
+    tag: 16-alpine
     pullPolicy: Always
   resources:
     requests:
       cpu: 250m
       memory: 512Mi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
   storage:
     size: 4Gi
   config:
-    PGDATA: "/var/lib/postgresql/data/pgdata"
-    POSTGRES_DB: "productdb"
+    PGDATA: /var/lib/postgresql/data/pgdata
+    POSTGRES_DB: productdb
   sealedSecrets:
-    POSTGRES_USER: AgBNC7j2WSJZufpLkv+fV6gYnzpYHYcZsqJd0/9JrVV8DIZ9YF9ACuOqWtMB7+owDDJ36qWid5EAW7vj38QSIwtHKJE/Jhn4ooxkb0xL0UAAtGoPpL5xwOUGZkJhWPCzNt+LAda+HGHz7S/RxAnDCOiLy78TnJjCnFsDkfB9EdGRZoWnH1p0jsamDx2fJLVG0AJ47JMSfJ6Bfsu1M4CT3kwpycDIgjoaTkm+Jvf/NwWlVa812R0qKbJtg2zfHNl07oDXIXHLoSA5/xq0MOoxVPt17tUOK4vN0yN2bnttKqBiaV//y2MhRHnDVBEvYitCklv4MMABZ4pxzLcBgsB2XVrOEkkFIgg6HbhUlHPFKG4gykKrjp/VseQrloCq7UAGtoEHg+zi/5UH5WXJknAvltFTkX8d5OhEaFcGXoViDvQY357kSb1ymjZyzXufufKbuCgdMaC/2WQwXy/mMzSLfu3hvaJ7vGz0wtDNfayXXOIdHOIA8nYQV0XvjF4zvkdBCnDGw9mPB/ZsNpMDWerfoaoMC+5HjPu5B1Ewmu4zzhjesPjkhFRi3GG7jKj9P9vRg0eBAzDerVISFRBZkVzEhlM9ilVuNdcA97GCu6K/WaSrX6C/wogqK0K7gXyKazQHT7BeyQg/LuxwDYfcgAv7faZFdyDW6/Q8CapIHAcKLtxtoI42YaucYaLPppq0CFj3r6KW3vXWwX7n
-    POSTGRES_PASSWORD: AgCpZoiI/Je0xohVP6nLuLz40gNvXWl1ef/WEDtkZAnTndPFNDZ9PsRlL26xrlROTtpmlOyqSkLPlrl0WZrMa/0brRHYMlbuyFJEQkQ8NMxpLGbydpZjRFRZD8pNhDWdcEuPItDFeyzSez+7UfiadjwW1L2KXkfczyJfkgym0FhXzZ5sA2gFV0UjorYzRnEQTXDu+SqGcdEBdLPktYQ4Lgb86J0PVWwiZwpJHET/SGL1M7z+R2u18vgPr7L4WfE6xeWyx7WieUBKfZisegEUK7j/I7oGoMK+PHpH82zy++vSv0wVrS6Pj63Xu6ulcnZhYQx6w1vqxRXME1WF4vLlMRMCVlsPR25wkxtG/zOoilsyCMi7OdWY3Q6p4HpT8uSOmt+4KLYNutTSEh3//D3Cz/QoGCi5vFtstdkw5JMKCjsOZktOj1feaa8IVucScLRJO2XugkKqhh6q94jtKwj5GFoQ7zxuNbermL4bGr06PlnYrPATxmKAqiVRYmRWQYvqr4z4X0s4mRK+VDBq8aid9Sz/p1wYOP3WsNF0HiBrFhttVeDQcQhNbL59mfJqoM5I55wu5VQdSv2AA9hx7nAYq4/5KN81wWvs/tn/BDlgz9nyYMjZF9lppDs8401BnJSyoFS8ebRm1JR87I44f9CpbeVng1aumn3LIf76h2r5dJ8Exb7j50yFdOxIpaXcFHRuJUVwwVGO20VMR0NLA5XqIg==
+    POSTGRES_USER: AgBUUkTiayi7PEshiQmQ0LzV5CqmQ3M6Fet86UHq6jdvTQJVp3GaFtJzGHx27rwS80CegZgE3Ypau/vNxrs3mhr5lIVpX8XD5hxq8L77uCdGQ/fpyz/p0Vcnkq1IV1yZPnVjjSFghDbPzVCcsr5dcuOW0Vf82+GSBMh+uh4lvYhweDJo0gN/22OAK6isF0SnLGs606j5DUX15PTlfK4+7v0Q/m2f0ZuO3Nekr9wRTgymxqKfR8TvftOKjvgkhDC0/pyWDLPwpRiRl5iBnp9MAfqVEa+0YJqICg7ay9T1bXCnZqIUr5TLxm/criYgh/6IsJ2haRbBHCUgKNcGpzlifHKNmNuLZBXr17ItzlPJ3/nNVcOTInd8JLBG58T5UpG9EISsf7xEICUkjfAz0MjRJyXGzWC66tSr8PNeeQ8gDHHFazFynv8LdyWcJpUbLu8yODF40mN74ciYHCIU1FpVfA9kmkABdhs1uapz3AJpStwRnvG0D/gJsOq16PugoOjKYKQaoNUTcG1z/l01Wbch+Ho3q8GMZiwcPc7CNe1GhNulwxE7XDJkZEUymWcTifX7DbVHUNbX0+XusYZzJ7ZkLhGgHYzLcY1PxtMSqcgSt2kPXYY6VvXRxJurbbmtI4iXNqHj7zwxm0fQO2ijdRaQqdkpIInkA2f432f27cjxFccj5CET4qC0ATJrvOuGTQjG8IlN1FJeld0T
+    POSTGRES_PASSWORD: AgCbQzN1+c8qLz1Awgb0iuC9FAhqHc5UTgWotvBHvfhv8TSDgOl/ERe4DrLm6RZG1TgnyP+P0toaTaDqTknlvk8EoSiHasthaQPOpgwLkbUOCgjam2FEG22/GxPyx8rYKyUEPjpWRaMcHGmwlHrxqQM92N+FxKxnKHyqbu1CL1BBnYwO2ftE4B5ZN4p+7Dda59SwUAyIY8P6UE5cPJ91IABGT4LLIM5d15713gNpH6T0XxnimDb4Igv3h+LPN/3iDYgDd43GcMlNQha8Omgh09aRypBgb7emEau6jNcD6OL/E7CurY7RRNmHgG/Kf5UL8wFheetUvvk0dVI8jTi147y8bjlmq8uNBMSocLBKlt43sNmkeQ7iEGVWmcildCJPp3ZYie9sVw9vcplxRkqCT9D1wASi8tIVTW9RKDRiLx4I8c5JY1/Utujm9Wz6vLqK1AK7nohC9zslnjALsh+jhXfQRYH522MAvwtgGV3zPKMiHo6NRwMFspm+I29wxgodzniEu80ddaGrGsy7iWpqWm1wI3/EmQeC9/0/t7WKfebjQ/r11I0GKOmf2kfox7e02qaepC2vC3RppACSpucLa9XEyPKx8tYYSx5ALyGlctiT3SV8MEy7hy2sPWYD49f0JS+wZKoRMgBCab+IM39B8puB8SloaTn0AG4UGl18sbdLhltk2Z7nJzCTqNeL+lqeX55+YuhEmNjZ153LFHr7JQ==
   probes:
     dbUser: sneaker
     dbName: productdb
-# ─── Order PostgreSQL ─────────────────────────────────────────
 order-postgres:
   enabled: true
   image:
     repository: postgres
-    tag: "16-alpine"
+    tag: 16-alpine
     pullPolicy: Always
   resources:
     requests:
       cpu: 250m
       memory: 512Mi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
   storage:
     size: 4Gi
   config:
-    PGDATA: "/var/lib/postgresql/data/pgdata"
-    POSTGRES_DB: "orderdb"
+    PGDATA: /var/lib/postgresql/data/pgdata
+    POSTGRES_DB: orderdb
   sealedSecrets:
-    POSTGRES_USER: AgCI5MXrZ+plcjQmuYWC7th2B625rK2WJ8lXWyFdDGV2pOFATbz0aGn+J0gHCG0LKJ1/cJd0udaexnzKPCVf1U+pl2fMdydLY0JdBH6wrSLL7hvhRJmEviJiMUn0JD9xKwxnIwWh2g2TfcXvknurUCr8PZEyAnaSZ0AE1E0ExeFS3IfQdf58gCSSfFcpNpyReeBY4/ESfvk2n59IomQKdpqyW2/eRHQI+wk/6Dd83flt29ii7CJL8rNnBzY8KQ2xthvxABqDXXNV8tMsxJPnSMSWUo7Agz6pyS8m8oriVe+3LBEq/U10QdHHB04YbgMyJX81hdBGhpApXSTQfJTRLN0ZgzCxpTwRhu92giJ7eKj6mYLNwaHKrbP860PY/gi/+ePPs6MtlajzwUWAV+ol0JOM7OPNIW0njrAXofugkyyb3bEsZOPx/2MCenExEeNF6vHRwkdo51aWgUegtG5G7DI1W33kvAM2xXQatzPkH40AO3VTkNQRDKz5i8GLvw75mZ5NtWq5WEBDRP1sTYErnUg11LpNpVYTdkf9lFMp+e1QFwDSlFYAnMtUS9SWt43ZbKPZUC9s+DIRORCs16WC2eZeuRzzcbn6zFlm4CV699B7NJ21MLFGQHJYmvqumc5Uyfksa+My/XgX/EO+sAvkDxmQAUHgoRdprpiaEkoJH//Wvgal8OEcg7MUQcIijQuqoADaWxTiQ6ZO
-    POSTGRES_PASSWORD: AgAHO/2z2LVr//A4KRsss1o7+3NKkQjteIoYoPB+HmMo+lfhooEdnzCYFpKBrgOfp6XVuc2qoBan6EA0vdUmddc/Oy35Dv5a97HeryEsthR2iubMyE8vlj4GqDJGl2S5FQfGdqyZ5rkyxoj4vK194A3kDuc6s7daNKzw/xXKFiCGq0Ll9KI0wZpVdv1b6ZuQWT/sa2xHiHOLIycsidWSG2lIWneZhf2ezn10u8QBnoz2vaTesyePBQ2jr3MNvOp95o+ZEnNMFy1QPsD+Ke97JIO7KABAGUdAMMNEz6vI8yNOEq515oADVTcX0UF06J32NpxZAK8oyBJ+L37vRXYBlTu/CInO7/u2rKC5tZ0HaW7ahTprQ/DO527rPkLfrLbJm3FxNAwhy6FVBc0qTwtdBOl+IGYc2J0Gr9pnVL4jgrpd8zbPgp+vYq578llnCDx2B1iLVD49gpR8r1EQrrSOxcV+DOiz4NNQlo3HiOnMea1DAA5r9bMxGVtzAz+kJT3/n3jB9ezEHdlpBTd27bJzZTLX4vtK3U/ZqWa7Ry+7wPXXuLE9kW9qB/ZmfmHT28lbiDn4lvUZwhotrWQhkud/9HPKNFACENnioO12x7SR+f7OpGuu6hbs+pV0kX8vBp2Mlc3o1QgbVxi+Gn36M8nZBrBiQ53y0hKnQuHMkA/ONtZNviYRc4BpDsj3TVTQjrgT1Vhan5E8xuZYO9mbAXtYlA==
+    POSTGRES_USER: AgCIWhP41/yU5DV+JYV1JYgqbwKURbIvBpoI6lju6ZBfuAxvyRk9tMfhyKwZbmho2V8rGzdc/YgRixVrTRfYzSY36LWY7P1fan77BlxZ2nelkfefh5aU9xABPcKkz7k7SPa6j6NIw7m9SO+k52xUvxX8dgX/eEt0VMdPsG6huYh6C0V7erS5B2vG1xiKlMWYwPOIhSEo33MO7Bz7m5/u551Qe9RaTuf5hHMdrIKKDOkWP4F+VUiadaWwl4VaoeiBKRBM40QCe66TO3ItRGC5HjweJzaTgNLJlRurQDaKyvzA6RpJyrum5EjKCqIlthTSckQwHPcRgqHffa3VmBhWr0VlhSbRUMdFXMHO/9yYXddgsuV01JlvZJh+pa5mx6+hoCvi/OGucNJoz/7k7/CGdKSrJfCH0f3uInagwzGQgf+NxFzC4dxFXzTPEpsGwowMuNHLrjbPVKc/spbNr2Pm3/5VlYMaNIKASo878G0kEK/ylJMB0MSt7bosxn+irrnX6zon9s5V6RXCHuERa6mnpZGP0Lvs7m3Ixr9DKyDunB7EA2RKXmYF42v3qXtEjrS+53hXTvxvbLlTmpbVR95ggefcyMGVIVBiDVNySHHWsdB2Ks6DgGrT+pUUJs/rK9hidl8shZ1Xjl5ceFUJdKZNs1LhwLjBdCOraW9eu6aXYxf2XTFwNS7IMHUT1CU0Jee24x3vf6/35Ksv
+    POSTGRES_PASSWORD: AgBxLgyaKxWlqOTVCZnvf3AEHecpdXQNWi3TfIXcalNLducoJSWRxawClCxBvq1LXZi8+m7A5NFAmdxECWTdbM3QDwxZTKfa91gcKIbe0tDJFJ4Cg7j5xBAxeZeGsbfzN+rWQB5UwIwMSfbj/xet4SEia8ImZo36Zq6zts7FGcLO2MckxZSXaeFhitL5DVqzIuCcq+j+aCul02tqiml3i0WOHQg4dvPeU6mnYAJ/jJv1xhCZk3u0/GH51dNEm6UVXs+ca1ckcs866ErUhwGfmeFqEgsRamUUj3clfVSobV3avuVa2J3Xg+gHAe89NE/4VKZeuSffq79nriqkgbDJ40Z1Cz+j6BQN4BEm08LQDnvWgHE90B/feMpCa930j8M5yB3+M3Ry2hkBYn7QycOnRsJ58153yEEKqO/dUiG1lK3Ifg1m5dxUTBWfjLdSgEDyXs5BAJFVN5F5NrVDqFtyr3dzn9I435xbqfXRK6GDJIdkMHaxeJyMN4bYEDwR/nZFSf93qUyanIlqnoj2FS0mn+48xjtvnhTAkLYpL0w7X/v80altlqmFL9mmFaLd++P6H5xG0oTDtQ/Vfn8lIRfr5llEKRgOAQs9bDp9eNvz2L+uviXwXqEzJL6cBbauWis7vUAr+BGZUI0pLkLpZIasDGjWFNBjDmYOhmB3yCtuViR/Y53ZAAQmnXhsk0ELZblM8yKEyNmO8FOugVuQX4c5bA==
   probes:
     dbUser: sneaker
     dbName: orderdb
-# ─── Gateway ──────────────────────────────────────────────────
 gateway:
   enabled: true
   gatewayClassName: kgateway
   listenerPort: 80
   listenerProtocol: HTTP
   routes:
-    - name: user-service-route
-      paths:
-        - /api/v1/auth
-        - /api/v1/users
-      backendService: user-service
-      backendPort: 8001
-    - name: product-service-route
-      paths:
-        - /api/v1/products
-      backendService: product-service
-      backendPort: 8002
-    - name: order-service-route
-      paths:
-        - /api/v1/cart
-        - /api/v1/orders
-      backendService: order-service
-      backendPort: 8003
-    - name: frontend-route
-      paths:
-        - /
-      backendService: frontend-service
-      backendPort: 80
-# ─── Network Policies ─────────────────────────────────────────
+  - name: user-service-route
+    paths:
+    - /api/v1/auth
+    - /api/v1/users
+    backendService: user-service
+    backendPort: 8001
+  - name: product-service-route
+    paths:
+    - /api/v1/products
+    backendService: product-service
+    backendPort: 8002
+  - name: order-service-route
+    paths:
+    - /api/v1/cart
+    - /api/v1/orders
+    backendService: order-service
+    backendPort: 8003
+  - name: frontend-route
+    paths:
+    - /
+    backendService: frontend-service
+    backendPort: 80
 network-policies:
   enabled: true
-  gatewayPodSelector: "app.kubernetes.io/name"
-  gatewayPodSelectorValue: "sneakerhead-gateway"
+  gatewayPodSelector: app.kubernetes.io/name
+  gatewayPodSelectorValue: sneakerhead-gateway
   kgatewayNamespace: kgateway-system
   xdsPort: 9977
-# ─── RBAC ─────────────────────────────────────────────────────
 rbac:
   enabled: true
   roleName: sneakerhead-prod-role
   roleBindingName: sneakerhead-prod-rolebinding
   groupName: sneakerhead-prod-team
   rules:
-    # Read-only on common resources
-    - apiGroups: [""]
-      resources: ["pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "endpoints"]
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["apps"]
-      resources: ["deployments", "statefulsets", "replicasets", "daemonsets"]
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["batch"]
-      resources: ["jobs", "cronjobs"]
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["autoscaling"]
-      resources: ["horizontalpodautoscalers"]
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["networking.k8s.io"]
-      resources: ["networkpolicies", "ingresses"]
-      verbs: ["get", "list", "watch"]
-    - apiGroups: ["gateway.networking.k8s.io"]
-      resources: ["gateways", "httproutes"]
-      verbs: ["get", "list", "watch"]
-    # Update/patch on deployments and statefulsets only
-    - apiGroups: ["apps"]
-      resources: ["deployments", "statefulsets"]
-      verbs: ["update", "patch"]
+  - apiGroups:
+    - ''
+    resources:
+    - pods
+    - services
+    - configmaps
+    - secrets
+    - persistentvolumeclaims
+    - endpoints
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    - statefulsets
+    - replicasets
+    - daemonsets
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+    - networkpolicies
+    - ingresses
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - gateway.networking.k8s.io
+    resources:
+    - gateways
+    - httproutes
+    verbs:
+    - get
+    - list
+    - watch
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    - statefulsets
+    verbs:
+    - update
+    - patch

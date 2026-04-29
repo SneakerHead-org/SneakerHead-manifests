@@ -1,0 +1,33 @@
+dependencies:
+- name: frontend
+  repository: ""
+  version: 1.0.0
+- name: user-service
+  repository: ""
+  version: 1.0.0
+- name: product-service
+  repository: ""
+  version: 1.0.0
+- name: order-service
+  repository: ""
+  version: 1.0.0
+- name: user-postgres
+  repository: ""
+  version: 1.0.0
+- name: product-postgres
+  repository: ""
+  version: 1.0.0
+- name: order-postgres
+  repository: ""
+  version: 1.0.0
+- name: gateway
+  repository: ""
+  version: 1.0.0
+- name: network-policies
+  repository: ""
+  version: 1.0.0
+- name: rbac
+  repository: ""
+  version: 1.0.0
+digest: sha256:4b8cfdd8be4d805b0437e640b0ab9a352c2995e3fb50de4515f3be163784e863
+generated: "2026-04-25T14:25:17.090254123Z"
