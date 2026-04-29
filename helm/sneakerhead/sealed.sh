@@ -192,51 +192,50 @@ preflight_checks() {
   fi
   log_ok "kubectl cluster connection verified."
 
-  # ── Auto-discover the Sealed Secrets controller ───────────────────────────────
-  # Search every namespace for a deployment whose name contains "sealed-secrets"
-  # This handles installs in kube-system, sealed-secrets, or any custom namespace.
-  log_info "Auto-discovering Sealed Secrets controller across all namespaces..."
+  # ── Verify / Auto-discover the Sealed Secrets controller ─────────────────────
+  # PRIORITY: configured values in SECTION 2 are checked FIRST.
+  # Auto-discovery only runs if the configured deployment is not found.
+  # This prevents accidentally picking up a controller in the wrong namespace.
+  log_info "Verifying Sealed Secrets controller: name='${CONTROLLER_NAME}' ns='${CONTROLLER_NAMESPACE}'"
 
-  local discovered_ns=""
-  local discovered_name=""
+  if kubectl get deployment "${CONTROLLER_NAME}" -n "${CONTROLLER_NAMESPACE}" &>/dev/null; then
+    log_ok "Sealed Secrets controller confirmed: '${CONTROLLER_NAME}' in '${CONTROLLER_NAMESPACE}'"
+  else
+    log_warn "Configured controller '${CONTROLLER_NAME}' not found in '${CONTROLLER_NAMESPACE}'."
+    log_warn "Running auto-discovery across all namespaces..."
 
-  # Strategy 1: look for a Deployment whose name matches *sealed*
-  while IFS= read -r line; do
-    local ns name
-    ns="$(echo "${line}"   | awk '{print $1}')"
-    name="$(echo "${line}" | awk '{print $2}')"
-    if [[ "${name}" == *"sealed"* ]]; then
-      discovered_ns="${ns}"
-      discovered_name="${name}"
-      break
-    fi
-  done < <(kubectl get deployments --all-namespaces --no-headers 2>/dev/null)
+    local discovered_ns=""
+    local discovered_name=""
 
-  # Strategy 2: if no deployment found, look for a Service whose name matches *sealed*
-  if [[ -z "${discovered_ns}" ]]; then
+    # Search all namespaces — prefer the configured namespace if multiple matches exist
     while IFS= read -r line; do
       local ns name
       ns="$(echo "${line}"   | awk '{print $1}')"
       name="$(echo "${line}" | awk '{print $2}')"
       if [[ "${name}" == *"sealed"* ]]; then
-        discovered_ns="${ns}"
-        discovered_name="${name}"
-        break
+        # Prefer match in the configured namespace
+        if [[ "${ns}" == "${CONTROLLER_NAMESPACE}" ]]; then
+          discovered_ns="${ns}"
+          discovered_name="${name}"
+          break
+        elif [[ -z "${discovered_ns}" ]]; then
+          # Accept first match as fallback, but keep looking
+          discovered_ns="${ns}"
+          discovered_name="${name}"
+        fi
       fi
-    done < <(kubectl get services --all-namespaces --no-headers 2>/dev/null)
-  fi
+    done < <(kubectl get deployments --all-namespaces --no-headers 2>/dev/null)
 
-  if [[ -n "${discovered_ns}" && -n "${discovered_name}" ]]; then
-    log_ok "Found Sealed Secrets controller: deployment='${discovered_name}' namespace='${discovered_ns}'"
-    # Override the configured values with what was actually found
-    CONTROLLER_NAME="${discovered_name}"
-    CONTROLLER_NAMESPACE="${discovered_ns}"
-  else
-    log_warn "Auto-discovery found nothing. Using configured values:"
-    log_warn "  CONTROLLER_NAME='${CONTROLLER_NAME}'"
-    log_warn "  CONTROLLER_NAMESPACE='${CONTROLLER_NAMESPACE}'"
-    log_warn "If kubeseal fails, run: kubectl get deployments --all-namespaces | grep sealed"
-    log_warn "Then set CONTROLLER_NAME and CONTROLLER_NAMESPACE in SECTION 2 of this script."
+    if [[ -n "${discovered_ns}" && -n "${discovered_name}" ]]; then
+      log_ok "Auto-discovered controller: deployment='${discovered_name}' namespace='${discovered_ns}'"
+      CONTROLLER_NAME="${discovered_name}"
+      CONTROLLER_NAMESPACE="${discovered_ns}"
+    else
+      log_error "Could not find a Sealed Secrets controller anywhere in the cluster."
+      log_error "Run: kubectl get deployments --all-namespaces | grep -i sealed"
+      log_error "Then set CONTROLLER_NAME and CONTROLLER_NAMESPACE in SECTION 2."
+      exit 1
+    fi
   fi
 }
 
