@@ -1,0 +1,18 @@
+# RBAC - Prod ClusterRoleBinding: binds sneakerhead-prod-team group to ns-viewer ClusterRole
+# Mirrors: helm/sneakerhead/values-prod.yaml → rbac.clusterRole.bindingName
+# Same group as prod-rolebinding.yaml (oidc:sneakerhead-prod-team)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sneakerhead-prod-ns-viewer-binding
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+subjects:
+  - kind: Group
+    name: oidc:sneakerhead-prod-team
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: sneakerhead-prod-ns-viewer
+  apiGroup: rbac.authorization.k8s.io

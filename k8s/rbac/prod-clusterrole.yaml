@@ -1,0 +1,14 @@
+# RBAC - Prod ClusterRole: grants Headlamp permission to list namespaces
+# Mirrors: helm/sneakerhead/values-prod.yaml → rbac.clusterRole.name
+# Required by Headlamp to populate the namespace dropdown for sneakerhead-prod
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sneakerhead-prod-ns-viewer
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: prod
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]

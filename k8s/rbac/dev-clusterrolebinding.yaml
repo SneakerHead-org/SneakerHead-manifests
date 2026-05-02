@@ -1,0 +1,18 @@
+# RBAC - Dev ClusterRoleBinding: binds sneakerhead-dev-team group to ns-viewer ClusterRole
+# Mirrors: helm/sneakerhead/values-dev.yaml → rbac.clusterRole.bindingName
+# Same group as dev-rolebinding.yaml (oidc:sneakerhead-dev-team)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sneakerhead-dev-ns-viewer-binding
+  labels:
+    app.kubernetes.io/part-of: sneakerhead
+    environment: dev
+subjects:
+  - kind: Group
+    name: oidc:sneakerhead-dev-team
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: sneakerhead-dev-ns-viewer
+  apiGroup: rbac.authorization.k8s.io
