@@ -276,7 +276,7 @@ rbac:
   enabled: true
   roleName: sneakerhead-prod-role
   roleBindingName: sneakerhead-prod-rolebinding
-  groupName: sneakerhead-prod-team
+  groupName: oidc:sneakerhead-prod-team
   rules:
   - apiGroups:
     - ''
