@@ -9,7 +9,7 @@ metadata:
     environment: dev
 subjects:
   - kind: Group
-    name: sneakerhead-dev-team
+    name: oidc:sneakerhead-dev-team
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
