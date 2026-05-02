@@ -20,8 +20,12 @@ spec:
     - server: https://kubernetes.default.svc
       namespace: sneakerhead-prod
 
-  # No cluster-scoped resources needed for infra
-  clusterResourceWhitelist: []
+  # Cluster-scoped resources needed for Headlamp namespace dropdown (ClusterRole/ClusterRoleBinding)
+  clusterResourceWhitelist:
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
 
   # Exact resource kinds rendered by rbac + network-policies sub-charts
   namespaceResourceWhitelist:

@@ -277,6 +277,11 @@ rbac:
   roleName: sneakerhead-dev-role
   roleBindingName: sneakerhead-dev-rolebinding
   groupName: oidc:sneakerhead-dev-team
+  # ClusterRole: grants namespace list permission for Headlamp namespace dropdown
+  clusterRole:
+    enabled: true
+    name: sneakerhead-dev-ns-viewer
+    bindingName: sneakerhead-dev-ns-viewer-binding
   rules:
   - apiGroups:
     - ''

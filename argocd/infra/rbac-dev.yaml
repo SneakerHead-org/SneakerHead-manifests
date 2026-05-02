@@ -29,6 +29,9 @@ spec:
         # Enable only the rbac sub-chart
         - name: rbac.enabled
           value: "true"
+        # Enable ClusterRole for Headlamp namespace dropdown
+        - name: rbac.clusterRole.enabled
+          value: "true"
         # Disable all other sub-charts
         - name: frontend.enabled
           value: "false"
@@ -61,3 +64,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - Replace=false
+      - ServerSideApply=true   # Required for cluster-scoped ClusterRole/ClusterRoleBinding

@@ -29,3 +29,36 @@ roleRef:
   kind: Role
   name: {{ .Values.roleName }}
   apiGroup: rbac.authorization.k8s.io
+{{- if .Values.clusterRole.enabled }}
+---
+# ClusterRole: allows Headlamp to list namespaces (required for namespace dropdown)
+# Scoped per environment via unique name to avoid dev/prod collision
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.clusterRole.name }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]
+---
+# ClusterRoleBinding: binds the same group to the namespace-viewer ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.clusterRole.bindingName }}
+  labels:
+    app.kubernetes.io/part-of: {{ .Values.global.labels.partOf }}
+    environment: {{ .Values.global.environment }}
+subjects:
+  - kind: Group
+    name: {{ .Values.groupName }}
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.clusterRole.name }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

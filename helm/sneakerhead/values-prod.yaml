@@ -277,6 +277,11 @@ rbac:
   roleName: sneakerhead-prod-role
   roleBindingName: sneakerhead-prod-rolebinding
   groupName: oidc:sneakerhead-prod-team
+  # ClusterRole: grants namespace list permission for Headlamp namespace dropdown
+  clusterRole:
+    enabled: true
+    name: sneakerhead-prod-ns-viewer
+    bindingName: sneakerhead-prod-ns-viewer-binding
   rules:
   - apiGroups:
     - ''
