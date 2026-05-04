@@ -9,7 +9,7 @@ frontend:
   replicaCount: 2
   image:
     repository: yaswanthreddy1602/sneakerhead-frontend
-    tag: dev-89825ce
+    tag: dev-d3e5180
     pullPolicy: IfNotPresent
   containerPort: 80
   service:
@@ -244,28 +244,28 @@ gateway:
   listenerPort: 80
   listenerProtocol: HTTP
   routes:
-  - name: user-service-route
-    paths:
-    - /api/v1/auth
-    - /api/v1/users
-    backendService: user-service
-    backendPort: 8001
-  - name: product-service-route
-    paths:
-    - /api/v1/products
-    backendService: product-service
-    backendPort: 8002
-  - name: order-service-route
-    paths:
-    - /api/v1/cart
-    - /api/v1/orders
-    backendService: order-service
-    backendPort: 8003
-  - name: frontend-route
-    paths:
-    - /
-    backendService: frontend-service
-    backendPort: 80
+    - name: user-service-route
+      paths:
+        - /api/v1/auth
+        - /api/v1/users
+      backendService: user-service
+      backendPort: 8001
+    - name: product-service-route
+      paths:
+        - /api/v1/products
+      backendService: product-service
+      backendPort: 8002
+    - name: order-service-route
+      paths:
+        - /api/v1/cart
+        - /api/v1/orders
+      backendService: order-service
+      backendPort: 8003
+    - name: frontend-route
+      paths:
+        - /
+      backendService: frontend-service
+      backendPort: 80
 network-policies:
   enabled: true
   gatewayPodSelector: app.kubernetes.io/name
@@ -283,85 +283,85 @@ rbac:
     name: sneakerhead-dev-ns-viewer
     bindingName: sneakerhead-dev-ns-viewer-binding
   rules:
-  - apiGroups:
-    - ''
-    resources:
-    - pods
-    - services
-    - configmaps
-    - secrets
-    - persistentvolumeclaims
-    verbs:
-    - get
-    - list
-    - watch
-    - create
-    - update
-    - patch
-    - delete
-  - apiGroups:
-    - apps
-    resources:
-    - deployments
-    - statefulsets
-    - replicasets
-    - daemonsets
-    verbs:
-    - get
-    - list
-    - watch
-    - create
-    - update
-    - patch
-    - delete
-  - apiGroups:
-    - batch
-    resources:
-    - jobs
-    - cronjobs
-    verbs:
-    - get
-    - list
-    - watch
-    - create
-    - update
-    - patch
-    - delete
-  - apiGroups:
-    - autoscaling
-    resources:
-    - horizontalpodautoscalers
-    verbs:
-    - get
-    - list
-    - watch
-    - create
-    - update
-    - patch
-    - delete
-  - apiGroups:
-    - networking.k8s.io
-    resources:
-    - networkpolicies
-    - ingresses
-    verbs:
-    - get
-    - list
-    - watch
-    - create
-    - update
-    - patch
-    - delete
-  - apiGroups:
-    - gateway.networking.k8s.io
-    resources:
-    - gateways
-    - httproutes
-    verbs:
-    - get
-    - list
-    - watch
-    - create
-    - update
-    - patch
-    - delete
+    - apiGroups:
+        - ''
+      resources:
+        - pods
+        - services
+        - configmaps
+        - secrets
+        - persistentvolumeclaims
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - patch
+        - delete
+    - apiGroups:
+        - apps
+      resources:
+        - deployments
+        - statefulsets
+        - replicasets
+        - daemonsets
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - patch
+        - delete
+    - apiGroups:
+        - batch
+      resources:
+        - jobs
+        - cronjobs
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - patch
+        - delete
+    - apiGroups:
+        - autoscaling
+      resources:
+        - horizontalpodautoscalers
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - patch
+        - delete
+    - apiGroups:
+        - networking.k8s.io
+      resources:
+        - networkpolicies
+        - ingresses
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - patch
+        - delete
+    - apiGroups:
+        - gateway.networking.k8s.io
+      resources:
+        - gateways
+        - httproutes
+      verbs:
+        - get
+        - list
+        - watch
+        - create
+        - update
+        - patch
+        - delete
